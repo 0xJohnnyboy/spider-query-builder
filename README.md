@@ -1,4 +1,27 @@
-![spider logo](./assets/logo.png "logo")
+```
+
+ ad88888ba              88          88
+d8"     "8b             ""          88
+Y8,                                 88
+`Y8aaaaa,   8b,dPPYba,  88  ,adPPYb,88  ,adPPYba, 8b,dPPYba,
+  `"""""8b, 88P'    "8a 88 a8"    `Y88 a8P_____88 88P'   "Y8
+        `8b 88       d8 88 8b       88 8PP""""""" 88
+Y8a     a8P 88b,   ,a8" 88 "8a,   ,d88 "8b,   ,aa 88
+ "Y88888P"  88`YbbdP"'  88  `"8bbdP"Y8  `"Ybbd8"' 88
+            88
+            88
+
+  ,ad8888ba,                                                 88888888ba              88 88          88
+ d8"'    `"8b                                                88      "8b             "" 88          88
+d8'        `8b                                               88      ,8P                88          88
+88          88 88       88  ,adPPYba, 8b,dPPYba, 8b       d8 88aaaaaa8P' 88       88 88 88  ,adPPYb,88  ,adPPYba, 8b,dPPYba,
+88          88 88       88 a8P_____88 88P'   "Y8 `8b     d8' 88""""""8b, 88       88 88 88 a8"    `Y88 a8P_____88 88P'   "Y8
+Y8,    "88,,8P 88       88 8PP""""""" 88          `8b   d8'  88      `8b 88       88 88 88 8b       88 8PP""""""" 88
+ Y8a.    Y88P  "8a,   ,a88 "8b,   ,aa 88           `8b,d8'   88      a8P "8a,   ,a88 88 88 "8a,   ,d88 "8b,   ,aa 88
+  `"Y8888Y"Y8a  `"YbbdP'Y8  `"Ybbd8"' 88             Y88'    88888888P"   `"YbbdP'Y8 88 88  `"8bbdP"Y8  `"Ybbd8"' 88
+                                                     d8'
+                                                    d8'
+```
 
 ```bash
 $ npm i @sonicfury/spider-query-builder
