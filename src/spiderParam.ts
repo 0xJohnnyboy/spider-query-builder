@@ -6,9 +6,8 @@
  * SpiderParamInterface must be implemented by all SpiderParams
  */
 export interface SpiderParamInterface {
-    get query(): string;
-    set query(value: string);
-    get operator(): SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
+    query: string;
+    operator: SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
 }
 
 /**
@@ -68,9 +67,17 @@ export class SpiderEqualsParam extends SpiderParam {
      * @param property string
      * @param value string
      */
-    constructor(property: string, value: string) {
+    constructor(property: string, value: string|string[]) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}=${value}`;
+        if (!Array.isArray(value)){
+            this.query = `${property}=${value}`;
+        } else {
+            value.forEach((v, i) => {
+                this.query += `${property}[]=${value[i]}`;
+            })
+        }
+
+
     }
 }
 
