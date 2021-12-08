@@ -1,5 +1,9 @@
 ![spider logo](./assets/logo.png "logo")
 
+```bash
+$ npm i @sonicfury/spider-query-builder
+```
+
 # Spider Query Builder
 
 This library is designed to help you interact between your front end app and your backend based on Api Platform. It can
@@ -70,6 +74,8 @@ qb.append(param5, '||');
 Only defaults filters are supported but you can easily create your own `SpiderParam` by extending `SpiderParam` abstract
 class. Plus, the `SpiderQueryBuilder` expects an implementation of the `SpiderParamInterface` so you can even create
 your own abstract class that will suit you best.
+
+
 ---
 NOTE: the `SpiderSearchParam` handles (as API Platform natively does), multiple values. You can indeed pass an array as you create a new instance:
 ```typescript
