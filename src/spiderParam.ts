@@ -6,9 +6,8 @@
  * SpiderParamInterface must be implemented by all SpiderParams
  */
 export interface SpiderParamInterface {
-    get query(): string;
-    set query(value: string);
-    get operator(): SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
+    query: string;
+    operator: SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
 }
 
 /**
@@ -62,15 +61,24 @@ export class SpiderExistsParam extends SpiderParam {
     }
 }
 
-export class SpiderEqualsParam extends SpiderParam {
+export class SpiderSearchParam extends SpiderParam {
 
     /**
      * @param property string
      * @param value string
      */
-    constructor(property: string, value: string) {
+    constructor(property: string, value: string | string[]) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}=${value}`;
+        if (!Array.isArray(value)) {
+            this.query = `${property}${this.operator}${value}`;
+        } else {
+            this.query = '';
+            value.forEach((v, i) => {
+                this.query += i !== (value.length - 1) ? `${property}[]${this.operator}${value[i]}&` : `${property}[]${this.operator}${value[i]}`;
+            })
+        }
+
+
     }
 }
 
@@ -117,13 +125,46 @@ export class SpiderSortParam extends SpiderParam {
     }
 }
 
+export class SpiderPaginationParam extends SpiderParam {
+    /**
+     * @param value boolean
+     * @param property string ('pagination' by default)
+     */
+    constructor(value: boolean = true, property: string = SpiderPaginationProperty.pagination) {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
+    }
+}
+
+export class SpiderPageIdxParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string ('page' by default)
+     */
+    constructor(value: number, property: string = SpiderPaginationProperty.page) {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
+    }
+}
+
+export class SpiderPageSizeParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string ('itemsPerPage' by default)
+     */
+    constructor(value: number, property: string = SpiderPaginationProperty.itemsPerPage) {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
+    }
+}
+
 /**
  * Base operators
  * @enum string
  */
 export enum SpiderOperator {
     exists = 'exists',
-    equals = 'equals',
+    equals = '=',
     sort = 'order'
 }
 
@@ -157,4 +198,14 @@ export enum SpiderDateOperator {
     before = 'before',
     strictlyAfter = 'strictly_after',
     strictlyBefore = 'strictly_before'
+}
+
+/**
+ * Pagination properties
+ * @enum string
+ */
+export enum SpiderPaginationProperty {
+    pagination = 'pagination',
+    page = 'page',
+    itemsPerPage = 'itemsPerPage'
 }

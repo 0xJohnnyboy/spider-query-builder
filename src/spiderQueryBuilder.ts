@@ -1,4 +1,4 @@
-import {SpiderParam, SpiderParamInterface} from "./SpiderParam";
+import {SpiderParam, SpiderParamInterface} from "./spiderParam";
 
 export class SpiderQueryBuilder {
 
