@@ -61,19 +61,20 @@ export class SpiderExistsParam extends SpiderParam {
     }
 }
 
-export class SpiderEqualsParam extends SpiderParam {
+export class SpiderSearchParam extends SpiderParam {
 
     /**
      * @param property string
      * @param value string
      */
-    constructor(property: string, value: string|string[]) {
+    constructor(property: string, value: string | string[]) {
         super(property, SpiderOperator.equals, value);
-        if (!Array.isArray(value)){
+        if (!Array.isArray(value)) {
             this.query = `${property}=${value}`;
         } else {
+            this.query = '';
             value.forEach((v, i) => {
-                this.query += `${property}[]=${value[i]}`;
+                this.query += i !== (value.length - 1) ? `${property}[]=${value[i]}&` : `${property}[]=${value[i]}`;
             })
         }
 

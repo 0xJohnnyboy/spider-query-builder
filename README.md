@@ -18,18 +18,18 @@ getDomain(query: string): Observable<HttpResponse<Domain[]>> {
 }
 ```
 
-Api Platform has specific semantics for the built-in filters.
+API Platform has specific semantics for the built-in filters.
 
 With this library, you have to build `SpiderParams` for each filter, like:
 
 ```typescript
-import {SpiderEqualsParam, SpiderExistsParam, SpiderRangeParam} from "./SpiderParam";
+import {SpiderSearchParam, SpiderExistsParam, SpiderRangeParam} from "./SpiderParam";
 import {SpiderQueryBuilder} from "./SpiderQueryBuilder";
 
 // create SpiderParams with values you get from your filters form on value change
 const param1 = new SpiderExistsParam('username', true); // wether the property 'username' exists
-const param2 = new SpiderEqualsParam('firstname', 'john'); // search for a 'john' firstname
-const param3 = new SpiderEqualsParam('lastname', 'doe'); // search for a 'doe' lastname
+const param2 = new SpiderSearchParam('firstname', 'john'); // search for a 'john' firstname
+const param3 = new SpiderSearchParam('lastname', 'doe'); // search for a 'doe' lastname
 const param4 = new SpiderRangeParam('rank', 1, 200); // search for a result with rank between 1 and 200
 
 const params = [param1, param2, param3, param4];
@@ -50,8 +50,8 @@ const qb = new SpiderQueryBuilder(params, 'AND');
 ```
 
 ```typescript
-const param5 = new SpiderEqualsParam('firstname', 'jane'); // search for a 'john' firstname
-const param6 = new SpiderEqualsParam('firstname', 'john'); // search for a 'doe' lastname
+const param5 = new SpiderSearchParam('firstname', 'jane'); // search for a 'john' firstname
+const param6 = new SpiderSearchParam('firstname', 'john'); // search for a 'doe' lastname
 
 const qb2 = new SpiderQueryBuilder([param5, param6], '||');
 // qb2.query => "firstname=jane||firstname=john
@@ -70,3 +70,9 @@ qb.append(param5, '||');
 Only defaults filters are supported but you can easily create your own `SpiderParam` by extending `SpiderParam` abstract
 class. Plus, the `SpiderQueryBuilder` expects an implementation of the `SpiderParamInterface` so you can even create
 your own abstract class that will suit you best.
+---
+NOTE: the `SpiderSearchParam` handles (as API Platform natively does), multiple values. You can indeed pass an array as you create a new instance:
+```typescript
+const param = new SpiderSearchParam('name', ['John Doe', 'Jane Doe']);
+// param.query => "name[]=John Doe&name[]=Jane Doe"
+```
