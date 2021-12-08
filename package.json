@@ -1,7 +1,7 @@
 {
   "name": "@sonicfury/spider-query-builder",
   "description": "Offers typing and query params building for Api Platform ",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": {
     "name": "Théo LAMBERT",
     "email": "theo.lambert@viacesi.fr"
@@ -23,8 +23,5 @@
     "chai": "^4.3.4",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com/sonicfury"
   }
 }
