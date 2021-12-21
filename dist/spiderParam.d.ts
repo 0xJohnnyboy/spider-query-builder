@@ -68,13 +68,27 @@ export declare class SpiderSortParam extends SpiderParam {
      */
     constructor(property: string, value: SpiderSortValue);
 }
+export declare class SpiderPageIdxParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string ('page' by default)
+     */
+    constructor(value: number, property?: string);
+}
+export declare class SpiderPageSizeParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string, ('itemsPerPage' by default)
+     */
+    constructor(value: number, property?: string);
+}
 /**
  * Base operators
  * @enum string
  */
 export declare enum SpiderOperator {
     exists = "exists",
-    equals = "equals",
+    equals = "=",
     sort = "order"
 }
 /**

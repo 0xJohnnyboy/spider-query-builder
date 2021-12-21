@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import {
     SpiderDateOperator,
     SpiderDateParam,
-    SpiderExistsParam,
+    SpiderExistsParam, SpiderPageIdxParam, SpiderPageSizeParam,
     SpiderRangeOperator,
     SpiderRangeParam,
     SpiderSearchParam,
@@ -10,7 +10,7 @@ import {
     SpiderSortValue
 } from "../src";
 
-const should = chai.should();
+chai.should();
 
 describe('Testing SpiderExistsParam', () => {
     it("should create a query equal to 'exists[isActive]=true'", () => {
@@ -102,5 +102,31 @@ describe('Testing SpiderSortParam', () => {
         const param = new SpiderSortParam('name', SpiderSortValue.desc);
 
         param.query.should.equal('order[name]=desc');
+    });
+});
+
+describe('Testing SpiderPageIdxParam', () => {
+    it('should create a query equal to "page=2"', () => {
+        const param = new SpiderPageIdxParam(2);
+
+        param.query.should.equal('page=2');
+    });
+    it('should create a query equal to "_page=42"', () => {
+        const param = new SpiderPageIdxParam(42, '_page');
+
+        param.query.should.equal('_page=42');
+    });
+});
+
+describe('Testing SpiderPageSizeParam', () => {
+    it('should create a query equal to "itemsPerPage=5"', () => {
+        const param = new SpiderPageSizeParam(5);
+
+        param.query.should.equal('itemsPerPage=5');
+    });
+    it('should create a query equal to "collectionSize=42"', () => {
+        const param = new SpiderPageSizeParam(42, 'collectionSize');
+
+        param.query.should.equal('collectionSize=42');
     });
 });

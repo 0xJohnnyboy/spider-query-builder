@@ -70,11 +70,11 @@ export class SpiderSearchParam extends SpiderParam {
     constructor(property: string, value: string | string[]) {
         super(property, SpiderOperator.equals, value);
         if (!Array.isArray(value)) {
-            this.query = `${property}=${value}`;
+            this.query = `${property}${this.operator}${value}`;
         } else {
             this.query = '';
             value.forEach((v, i) => {
-                this.query += i !== (value.length - 1) ? `${property}[]=${value[i]}&` : `${property}[]=${value[i]}`;
+                this.query += i !== (value.length - 1) ? `${property}[]${this.operator}${value[i]}&` : `${property}[]${this.operator}${value[i]}`;
             })
         }
 
@@ -125,13 +125,35 @@ export class SpiderSortParam extends SpiderParam {
     }
 }
 
+export class SpiderPageIdxParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string ('page' by default)
+     */
+    constructor(value: number, property: string = 'page') {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property}${this.operator}${value.toString()}`;
+    }
+}
+
+export class SpiderPageSizeParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string, ('itemsPerPage' by default)
+     */
+    constructor(value: number, property: string = 'itemsPerPage') {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property}${this.operator}${value.toString()}`;
+    }
+}
+
 /**
  * Base operators
  * @enum string
  */
 export enum SpiderOperator {
     exists = 'exists',
-    equals = 'equals',
+    equals = '=',
     sort = 'order'
 }
 

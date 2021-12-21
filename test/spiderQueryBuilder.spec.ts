@@ -2,7 +2,7 @@ import * as chai from 'chai';
 import {
     SpiderDateOperator,
     SpiderDateParam,
-    SpiderExistsParam,
+    SpiderExistsParam, SpiderPageIdxParam, SpiderPageSizeParam,
     SpiderQueryBuilder,
     SpiderRangeOperator,
     SpiderRangeParam,
@@ -11,10 +11,10 @@ import {
     SpiderSortValue
 } from "../src";
 
-const should = chai.should();
+chai.should();
 
 describe('Testing SpiderQueryBuilder', () => {
-    it('should build a query equal to', () => {
+    it('should build a query equal to exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10', () => {
         const date: Date = new Date();
         const isoString = date.toISOString().slice(0, 10);
 
@@ -23,10 +23,12 @@ describe('Testing SpiderQueryBuilder', () => {
             new SpiderSearchParam('name', ['John Doe', 'Jane Doe']),
             new SpiderDateParam('addedAt', SpiderDateOperator.strictlyBefore, date),
             new SpiderRangeParam('orders', SpiderRangeOperator.between, 0, 10),
-            new SpiderSortParam('name', SpiderSortValue.asc)
+            new SpiderSortParam('name', SpiderSortValue.asc),
+            new SpiderPageIdxParam(2, '_page'),
+            new SpiderPageSizeParam(10)
         ]
 
-        const expectedQuery = `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc`;
+        const expectedQuery = `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`;
 
         const qb = new SpiderQueryBuilder(params);
 

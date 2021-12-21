@@ -3,7 +3,7 @@
  * Copyright (c) 2021 Théo Lambert
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SpiderDateOperator = exports.SpiderRangeOperator = exports.SpiderSortValue = exports.SpiderOperator = exports.SpiderSortParam = exports.SpiderRangeParam = exports.SpiderDateParam = exports.SpiderSearchParam = exports.SpiderExistsParam = exports.SpiderParam = void 0;
+exports.SpiderDateOperator = exports.SpiderRangeOperator = exports.SpiderSortValue = exports.SpiderOperator = exports.SpiderPageSizeParam = exports.SpiderPageIdxParam = exports.SpiderSortParam = exports.SpiderRangeParam = exports.SpiderDateParam = exports.SpiderSearchParam = exports.SpiderExistsParam = exports.SpiderParam = void 0;
 /**
  * SpiderParam Abstract Class
  * You should extend this for your custom purposes.
@@ -53,12 +53,12 @@ class SpiderSearchParam extends SpiderParam {
     constructor(property, value) {
         super(property, SpiderOperator.equals, value);
         if (!Array.isArray(value)) {
-            this.query = `${property}=${value}`;
+            this.query = `${property}${this.operator}${value}`;
         }
         else {
             this.query = '';
             value.forEach((v, i) => {
-                this.query += i !== (value.length - 1) ? `${property}[]=${value[i]}&` : `${property}[]=${value[i]}`;
+                this.query += i !== (value.length - 1) ? `${property}[]${this.operator}${value[i]}&` : `${property}[]${this.operator}${value[i]}`;
             });
         }
     }
@@ -104,6 +104,28 @@ class SpiderSortParam extends SpiderParam {
     }
 }
 exports.SpiderSortParam = SpiderSortParam;
+class SpiderPageIdxParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string ('page' by default)
+     */
+    constructor(value, property = 'page') {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property}${this.operator}${value.toString()}`;
+    }
+}
+exports.SpiderPageIdxParam = SpiderPageIdxParam;
+class SpiderPageSizeParam extends SpiderParam {
+    /**
+     * @param value number
+     * @param property string, ('itemsPerPage' by default)
+     */
+    constructor(value, property = 'itemsPerPage') {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property}${this.operator}${value.toString()}`;
+    }
+}
+exports.SpiderPageSizeParam = SpiderPageSizeParam;
 /**
  * Base operators
  * @enum string
@@ -111,7 +133,7 @@ exports.SpiderSortParam = SpiderSortParam;
 var SpiderOperator;
 (function (SpiderOperator) {
     SpiderOperator["exists"] = "exists";
-    SpiderOperator["equals"] = "equals";
+    SpiderOperator["equals"] = "=";
     SpiderOperator["sort"] = "order";
 })(SpiderOperator = exports.SpiderOperator || (exports.SpiderOperator = {}));
 /**
