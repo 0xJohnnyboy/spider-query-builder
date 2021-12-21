@@ -37,11 +37,13 @@ Example:
 Say you have a DomainService (`domain.service.ts` file) with the something like:
 
 ```typescript
+class DomainService extends AbstractService{
+    
+    getDomain(query: string): Observable<HttpResponse<Domain[]>> {
+        const url = `${this.baseUrl}/domain?${query}`;
 
-getDomain(query: string): Observable<HttpResponse<Domain[]>> {
-    const url = `${this.baseUrl}/domain?${query}`;
-
-    return this.http.get<Domain[]>(url);
+        return this.http.get<Domain[]>(url);
+    }
 }
 ```
 
@@ -88,10 +90,10 @@ Passing it to the `append()` method will result in something like this:
 
 ```typescript
 const qb = new SpiderQueryBuilder(params);
-// qb => "exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200"
+// qb.query => "exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200"
 
 qb.append(param5, '||');
-// qb => "exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200||firstname=jane"
+// qb.query => "exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200||firstname=jane"
 ```
 
 Only defaults filters are supported but you can easily create your own `SpiderParam` by extending `SpiderParam` abstract
@@ -100,8 +102,25 @@ your own abstract class that will suit you best.
 
 
 ---
-NOTE: the `SpiderSearchParam` handles (as API Platform natively does), multiple values. You can indeed pass an array as you create a new instance:
+NOTE: 
+the `SpiderSearchParam` handles (as API Platform natively does), multiple values. You can indeed pass an array as you create a new instance:
 ```typescript
 const param = new SpiderSearchParam('name', ['John Doe', 'Jane Doe']);
 // param.query => "name[]=John Doe&name[]=Jane Doe"
+```
+the `SpiderPaginationParam`, `SpiderPageIdxParam` and `SpiderPageSizeParam` help you handle pagination. The first one helps you enable client-side pagination: 
+you can use it as follows:
+
+```typescript
+const param = new SpiderPaginationParam(); // query => "pagination=true" by default
+const customParam = new SpiderPaginationParam(false, 'enabled_pagination'); // query => "enabled_pagination=false"
+```
+The other ones help you manage how many items you want and pagination offset:
+
+```typescript
+const pageIdxParam = new SpiderPageIdxParam(5); // "page=5"
+const customPIdxParam = new SpiderPageIdxParam(5, '_page'); // "_page=5"
+
+const pageSizeParam = new SpiderPageSizeParam(5); // "itemsPerPage=5"
+const customPSizeParam = new SpiderPageSizeParam(5, 'collectionSize'); // "collectionSize=5"
 ```
