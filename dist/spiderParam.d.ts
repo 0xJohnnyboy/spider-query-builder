@@ -68,6 +68,13 @@ export declare class SpiderSortParam extends SpiderParam {
      */
     constructor(property: string, value: SpiderSortValue);
 }
+export declare class SpiderPaginationParam extends SpiderParam {
+    /**
+     * @param value boolean
+     * @param property string ('pagination' by default)
+     */
+    constructor(value?: boolean, property?: string);
+}
 export declare class SpiderPageIdxParam extends SpiderParam {
     /**
      * @param value number
@@ -78,7 +85,7 @@ export declare class SpiderPageIdxParam extends SpiderParam {
 export declare class SpiderPageSizeParam extends SpiderParam {
     /**
      * @param value number
-     * @param property string, ('itemsPerPage' by default)
+     * @param property string ('itemsPerPage' by default)
      */
     constructor(value: number, property?: string);
 }
@@ -119,4 +126,13 @@ export declare enum SpiderDateOperator {
     before = "before",
     strictlyAfter = "strictly_after",
     strictlyBefore = "strictly_before"
+}
+/**
+ * Pagination properties
+ * @enum string
+ */
+export declare enum SpiderPaginationProperty {
+    pagination = "pagination",
+    page = "page",
+    itemsPerPage = "itemsPerPage"
 }

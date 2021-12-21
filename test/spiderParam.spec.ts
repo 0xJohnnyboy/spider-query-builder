@@ -2,13 +2,16 @@ import * as chai from 'chai';
 import {
     SpiderDateOperator,
     SpiderDateParam,
-    SpiderExistsParam, SpiderPageIdxParam, SpiderPageSizeParam,
+    SpiderExistsParam,
+    SpiderPageIdxParam,
+    SpiderPageSizeParam,
     SpiderRangeOperator,
     SpiderRangeParam,
     SpiderSearchParam,
     SpiderSortParam,
-    SpiderSortValue
+    SpiderSortValue,
 } from "../src";
+import {SpiderPaginationParam} from "../dist";
 
 chai.should();
 
@@ -128,5 +131,18 @@ describe('Testing SpiderPageSizeParam', () => {
         const param = new SpiderPageSizeParam(42, 'collectionSize');
 
         param.query.should.equal('collectionSize=42');
+    });
+});
+
+describe('Testing SpiderPaginationParam', () => {
+    it('should create a query equal to "pagination=true"', () => {
+        const param = new SpiderPaginationParam();
+
+        param.query.should.equal('pagination=true');
+    });
+    it('should create a query equal to "collectionSize=42"', () => {
+        const param = new SpiderPaginationParam(false, 'pagination_enable');
+
+        param.query.should.equal('pagination_enable=false');
     });
 });

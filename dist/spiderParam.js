@@ -3,7 +3,7 @@
  * Copyright (c) 2021 Théo Lambert
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SpiderDateOperator = exports.SpiderRangeOperator = exports.SpiderSortValue = exports.SpiderOperator = exports.SpiderPageSizeParam = exports.SpiderPageIdxParam = exports.SpiderSortParam = exports.SpiderRangeParam = exports.SpiderDateParam = exports.SpiderSearchParam = exports.SpiderExistsParam = exports.SpiderParam = void 0;
+exports.SpiderPaginationProperty = exports.SpiderDateOperator = exports.SpiderRangeOperator = exports.SpiderSortValue = exports.SpiderOperator = exports.SpiderPageSizeParam = exports.SpiderPageIdxParam = exports.SpiderPaginationParam = exports.SpiderSortParam = exports.SpiderRangeParam = exports.SpiderDateParam = exports.SpiderSearchParam = exports.SpiderExistsParam = exports.SpiderParam = void 0;
 /**
  * SpiderParam Abstract Class
  * You should extend this for your custom purposes.
@@ -104,25 +104,36 @@ class SpiderSortParam extends SpiderParam {
     }
 }
 exports.SpiderSortParam = SpiderSortParam;
+class SpiderPaginationParam extends SpiderParam {
+    /**
+     * @param value boolean
+     * @param property string ('pagination' by default)
+     */
+    constructor(value = true, property = SpiderPaginationProperty.pagination) {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
+    }
+}
+exports.SpiderPaginationParam = SpiderPaginationParam;
 class SpiderPageIdxParam extends SpiderParam {
     /**
      * @param value number
      * @param property string ('page' by default)
      */
-    constructor(value, property = 'page') {
+    constructor(value, property = SpiderPaginationProperty.page) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}${this.operator}${value.toString()}`;
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
 exports.SpiderPageIdxParam = SpiderPageIdxParam;
 class SpiderPageSizeParam extends SpiderParam {
     /**
      * @param value number
-     * @param property string, ('itemsPerPage' by default)
+     * @param property string ('itemsPerPage' by default)
      */
-    constructor(value, property = 'itemsPerPage') {
+    constructor(value, property = SpiderPaginationProperty.itemsPerPage) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}${this.operator}${value.toString()}`;
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
 exports.SpiderPageSizeParam = SpiderPageSizeParam;
@@ -168,4 +179,14 @@ var SpiderDateOperator;
     SpiderDateOperator["strictlyAfter"] = "strictly_after";
     SpiderDateOperator["strictlyBefore"] = "strictly_before";
 })(SpiderDateOperator = exports.SpiderDateOperator || (exports.SpiderDateOperator = {}));
+/**
+ * Pagination properties
+ * @enum string
+ */
+var SpiderPaginationProperty;
+(function (SpiderPaginationProperty) {
+    SpiderPaginationProperty["pagination"] = "pagination";
+    SpiderPaginationProperty["page"] = "page";
+    SpiderPaginationProperty["itemsPerPage"] = "itemsPerPage";
+})(SpiderPaginationProperty = exports.SpiderPaginationProperty || (exports.SpiderPaginationProperty = {}));
 //# sourceMappingURL=spiderParam.js.map

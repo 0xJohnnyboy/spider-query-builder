@@ -125,25 +125,36 @@ export class SpiderSortParam extends SpiderParam {
     }
 }
 
+export class SpiderPaginationParam extends SpiderParam {
+    /**
+     * @param value boolean
+     * @param property string ('pagination' by default)
+     */
+    constructor(value: boolean = true, property: string = SpiderPaginationProperty.pagination) {
+        super(property, SpiderOperator.equals, value);
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
+    }
+}
+
 export class SpiderPageIdxParam extends SpiderParam {
     /**
      * @param value number
      * @param property string ('page' by default)
      */
-    constructor(value: number, property: string = 'page') {
+    constructor(value: number, property: string = SpiderPaginationProperty.page) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}${this.operator}${value.toString()}`;
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
 
 export class SpiderPageSizeParam extends SpiderParam {
     /**
      * @param value number
-     * @param property string, ('itemsPerPage' by default)
+     * @param property string ('itemsPerPage' by default)
      */
-    constructor(value: number, property: string = 'itemsPerPage') {
+    constructor(value: number, property: string = SpiderPaginationProperty.itemsPerPage) {
         super(property, SpiderOperator.equals, value);
-        this.query = `${property}${this.operator}${value.toString()}`;
+        this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
 
@@ -187,4 +198,14 @@ export enum SpiderDateOperator {
     before = 'before',
     strictlyAfter = 'strictly_after',
     strictlyBefore = 'strictly_before'
+}
+
+/**
+ * Pagination properties
+ * @enum string
+ */
+export enum SpiderPaginationProperty {
+    pagination = 'pagination',
+    page = 'page',
+    itemsPerPage = 'itemsPerPage'
 }
