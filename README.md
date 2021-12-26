@@ -11,7 +11,8 @@
 
 v2.0.0
 
-![test build publish](https://github.com/sonicfury/spider-query-builder/actions/workflows/test-build-publish.yml/badge.svg)
+![test](https://github.com/sonicfury/spider-query-builder/actions/workflows/test.yml/badge.svg)
+![publish](https://github.com/sonicfury/spider-query-builder/actions/workflows/publish.yml/badge.svg)
 
 # Installation
 ```bash
