@@ -1,2 +1,2 @@
-export * from './spiderParam';
-export { SpiderQueryBuilder } from './spiderQueryBuilder';
+export * from './spdrParam';
+export { SpdrQueryBuilder } from './spdrQueryBuilder';
