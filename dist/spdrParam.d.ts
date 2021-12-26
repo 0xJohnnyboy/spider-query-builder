@@ -1,9 +1,9 @@
 /**
  * SpdrParamInterface must be implemented by all SpiderParams
  */
-export interface SpiderParamInterface {
+export interface SpdrParamInterface {
     query: string;
-    operator: SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
+    operator: SpdrOperator | SpdrRangeOperator | SpdrDateOperator;
 }
 /**
  * SpdrParam Abstract Class
@@ -11,7 +11,7 @@ export interface SpiderParamInterface {
  * The SpdrQueryBuilder expects SpdrParamInterface[] as a parameter, though.
  * This means you can create your own abstract implementation.
  */
-export declare abstract class SpiderParam implements SpiderParamInterface {
+export declare abstract class SpdrParam implements SpdrParamInterface {
     private readonly _property;
     private readonly _operator;
     private readonly _value;
@@ -23,35 +23,35 @@ export declare abstract class SpiderParam implements SpiderParamInterface {
      * @param value any
      * @protected
      */
-    protected constructor(property: string, operator: SpiderOperator | SpiderRangeOperator | SpiderDateOperator, value: any);
+    protected constructor(property: string, operator: SpdrOperator | SpdrRangeOperator | SpdrDateOperator, value: any);
     get query(): string;
     set query(value: string);
-    get operator(): SpiderOperator | SpiderRangeOperator | SpiderDateOperator;
+    get operator(): SpdrOperator | SpdrRangeOperator | SpdrDateOperator;
 }
-export declare class SpiderExistsParam extends SpiderParam {
+export declare class SpdrExists extends SpdrParam {
     /**
      * @param property string
      * @param value boolean
      */
     constructor(property: string, value: boolean);
 }
-export declare class SpiderSearchParam extends SpiderParam {
+export declare class SpdrSearch extends SpdrParam {
     /**
      * @param property string
-     * @param value string
+     * @param values string[]
      */
-    constructor(property: string, value: string[]);
+    constructor(property: string, values: string[]);
 }
-export declare class SpiderDateParam extends SpiderParam {
+export declare class SpdrDate extends SpdrParam {
     /**
      * The date will be formatted in YYYY-MM-DD format, implement a new SpdrParam if you need another formatting.
      * @param property string
      * @param operator SpdrDateOperator
      * @param value Date
      */
-    constructor(property: string, operator: SpiderDateOperator, value: Date);
+    constructor(property: string, operator: SpdrDateOperator, value: Date);
 }
-export declare class SpiderRangeParam extends SpiderParam {
+export declare class SpdrRange extends SpdrParam {
     /**
      * The secondValue parameter is required for the 'between' operator
      * @param property string
@@ -59,30 +59,30 @@ export declare class SpiderRangeParam extends SpiderParam {
      * @param value number
      * @param secondValue number // optional
      */
-    constructor(property: string, operator: SpiderRangeOperator, value: number, secondValue?: number);
+    constructor(property: string, operator: SpdrRangeOperator, value: number, secondValue?: number);
 }
-export declare class SpiderSortParam extends SpiderParam {
+export declare class SpdrOrder extends SpdrParam {
     /**
      * @param property string
      * @param value SpdrOrderOperator
      */
-    constructor(property: string, value: SpiderSortValue);
+    constructor(property: string, value: SpdrOrderOperator);
 }
-export declare class SpiderPaginationParam extends SpiderParam {
+export declare class SpdrPagination extends SpdrParam {
     /**
      * @param value boolean
      * @param property string ('pagination' by default)
      */
     constructor(value?: boolean, property?: string);
 }
-export declare class SpiderPageIdxParam extends SpiderParam {
+export declare class SpdrPageIdx extends SpdrParam {
     /**
      * @param value number
      * @param property string ('page' by default)
      */
     constructor(value: number, property?: string);
 }
-export declare class SpiderPageSizeParam extends SpiderParam {
+export declare class SpdrPageSize extends SpdrParam {
     /**
      * @param value number
      * @param property string ('itemsPerPage' by default)
@@ -93,7 +93,7 @@ export declare class SpiderPageSizeParam extends SpiderParam {
  * Base operators
  * @enum string
  */
-export declare enum SpiderOperator {
+export declare enum SpdrOperator {
     exists = "exists",
     equals = "=",
     sort = "order"
@@ -102,7 +102,7 @@ export declare enum SpiderOperator {
  * Sort values
  * @enum string
  */
-export declare enum SpiderSortValue {
+export declare enum SpdrOrderOperator {
     asc = "asc",
     desc = "desc"
 }
@@ -110,7 +110,7 @@ export declare enum SpiderSortValue {
  * Range and comparison operators
  * @enum string
  */
-export declare enum SpiderRangeOperator {
+export declare enum SpdrRangeOperator {
     lt = "lt",
     lte = "lte",
     gt = "gt",
@@ -121,7 +121,7 @@ export declare enum SpiderRangeOperator {
  * Date comparison operators
  * @enum string
  */
-export declare enum SpiderDateOperator {
+export declare enum SpdrDateOperator {
     after = "after",
     before = "before",
     strictlyAfter = "strictly_after",
@@ -131,7 +131,7 @@ export declare enum SpiderDateOperator {
  * Pagination properties
  * @enum string
  */
-export declare enum SpiderPaginationProperty {
+export declare enum SpdrPageOperator {
     pagination = "pagination",
     page = "page",
     itemsPerPage = "itemsPerPage"

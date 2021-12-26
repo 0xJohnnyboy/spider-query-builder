@@ -10,8 +10,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SpiderQueryBuilder = void 0;
-__exportStar(require("./spiderParam"), exports);
-var spiderQueryBuilder_1 = require("./spiderQueryBuilder");
-Object.defineProperty(exports, "SpiderQueryBuilder", { enumerable: true, get: function () { return spiderQueryBuilder_1.SpiderQueryBuilder; } });
+exports.SpdrQueryBuilder = void 0;
+__exportStar(require("./spdrParam"), exports);
+var spdrQueryBuilder_1 = require("./spdrQueryBuilder");
+Object.defineProperty(exports, "SpdrQueryBuilder", { enumerable: true, get: function () { return spdrQueryBuilder_1.SpdrQueryBuilder; } });
 //# sourceMappingURL=index.js.map

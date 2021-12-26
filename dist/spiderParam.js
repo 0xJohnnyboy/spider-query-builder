@@ -5,16 +5,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpiderPaginationProperty = exports.SpiderDateOperator = exports.SpiderRangeOperator = exports.SpiderSortValue = exports.SpiderOperator = exports.SpiderPageSizeParam = exports.SpiderPageIdxParam = exports.SpiderPaginationParam = exports.SpiderSortParam = exports.SpiderRangeParam = exports.SpiderDateParam = exports.SpiderSearchParam = exports.SpiderExistsParam = exports.SpiderParam = void 0;
 /**
- * SpiderParam Abstract Class
+ * SpdrParam Abstract Class
  * You should extend this for your custom purposes.
- * The SpiderQueryBuilder expects SpiderParamInterface[] as a parameter, though.
+ * The SpdrQueryBuilder expects SpdrParamInterface[] as a parameter, though.
  * This means you can create your own abstract implementation.
  */
 class SpiderParam {
     /**
-     * SpiderParam base constructor
+     * SpdrParam base constructor
      * @param property string
-     * @param operator SpiderOperator | SpiderRangeOperator | SpiderDateOperator
+     * @param operator SpdrOperator | SpdrRangeOperator | SpdrDateOperator
      * @param value any
      * @protected
      */
@@ -52,23 +52,24 @@ class SpiderSearchParam extends SpiderParam {
      */
     constructor(property, value) {
         super(property, SpiderOperator.equals, value);
-        if (!Array.isArray(value)) {
-            this.query = `${property}${this.operator}${value}`;
-        }
-        else {
-            this.query = '';
-            value.forEach((v, i) => {
-                this.query += i !== (value.length - 1) ? `${property}[]${this.operator}${value[i]}&` : `${property}[]${this.operator}${value[i]}`;
-            });
-        }
+        this.query = '';
+        value.forEach((v, i) => {
+            this.query += `${property}[]${this.operator}${value[i]}`;
+            if (i !== value.length - 1) {
+                this.query += `${property}[]${this.operator}${value[i]}&`;
+            }
+            if (value.length === 1) {
+                this.query = `${property}${this.operator}${value[i]}`;
+            }
+        });
     }
 }
 exports.SpiderSearchParam = SpiderSearchParam;
 class SpiderDateParam extends SpiderParam {
     /**
-     * The date will be formatted in YYYY-MM-DD format, implement a new SpiderParam if you need another formatting.
+     * The date will be formatted in YYYY-MM-DD format, implement a new SpdrParam if you need another formatting.
      * @param property string
-     * @param operator SpiderDateOperator
+     * @param operator SpdrDateOperator
      * @param value Date
      */
     constructor(property, operator, value) {
@@ -81,7 +82,7 @@ class SpiderRangeParam extends SpiderParam {
     /**
      * The secondValue parameter is required for the 'between' operator
      * @param property string
-     * @param operator SpiderRangeOperator
+     * @param operator SpdrRangeOperator
      * @param value number
      * @param secondValue number // optional
      */
@@ -96,7 +97,7 @@ exports.SpiderRangeParam = SpiderRangeParam;
 class SpiderSortParam extends SpiderParam {
     /**
      * @param property string
-     * @param value SpiderSortValue
+     * @param value SpdrOrderOperator
      */
     constructor(property, value) {
         super(property, SpiderOperator.sort, value);
