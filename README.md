@@ -9,8 +9,9 @@
     |_|                         |_|                |___/
 ```
 
-v2.0.0
 
+[![GitHub Release](https://github-basic-badges.herokuapp.com/release/Sonicfury/spider-query-builder.svg)]()
+[![GitHub License](https://github-basic-badges.herokuapp.com/license/Sonicfury/spider-query-builder.svg)]()
 ![test](https://github.com/sonicfury/spider-query-builder/actions/workflows/test.yml/badge.svg)
 ![publish](https://github.com/sonicfury/spider-query-builder/actions/workflows/publish.yml/badge.svg)
 
