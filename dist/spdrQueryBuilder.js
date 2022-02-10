@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SpdrQueryBuilder = void 0;
-class SpdrQueryBuilder {
+export class SpdrQueryBuilder {
     /**
      * Constructing a new SpdrQueryBuilder builds the query if you pass params.
      * In this case, the query will be built with the default operand '&'.
@@ -41,5 +38,4 @@ class SpdrQueryBuilder {
         return this._query;
     }
 }
-exports.SpdrQueryBuilder = SpdrQueryBuilder;
 //# sourceMappingURL=spdrQueryBuilder.js.map
