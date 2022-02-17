@@ -24,6 +24,8 @@ export declare abstract class SpdrParam implements SpdrParamInterface {
      * @protected
      */
     protected constructor(property: string, operator: SpdrOperator | SpdrRangeOperator | SpdrDateOperator, value: any);
+    get property(): string;
+    get value(): any;
     get query(): string;
     set query(value: string);
     get operator(): SpdrOperator | SpdrRangeOperator | SpdrDateOperator;
