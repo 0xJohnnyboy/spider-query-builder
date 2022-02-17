@@ -35,6 +35,14 @@ export abstract class SpdrParam implements SpdrParamInterface {
         this._value = value;
     }
 
+    get property(): string {
+        return this._property;
+    }
+
+    get value(): any {
+        return this._value;
+    }
+
     get query(): string {
         return this._query;
     }

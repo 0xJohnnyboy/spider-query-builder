@@ -20,6 +20,12 @@ export class SpdrParam {
         this._operator = operator;
         this._value = value;
     }
+    get property() {
+        return this._property;
+    }
+    get value() {
+        return this._value;
+    }
     get query() {
         return this._query;
     }
