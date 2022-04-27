@@ -1,41 +1,67 @@
+import { SpdrDate, SpdrExists, SpdrOrder, SpdrPageIdx, SpdrPageOperator, SpdrPageSize, SpdrPagination, SpdrRange, SpdrSearch } from "./spdrParam";
 export class SpdrQueryBuilder {
-    /**
-     * Constructing a new SpdrQueryBuilder builds the query if you pass params.
-     * In this case, the query will be built with the default operand '&'.
-     * To override this behavior, you can construct an empty builder and manually append each SpdrParam according to your needs.
-     * @param params SpdrParam[]
-     */
-    constructor(params) {
+    constructor(operand) {
         this._query = '';
-        params && this.build(params);
+        this._operand = operand !== null && operand !== void 0 ? operand : SpdrQueryBuilder._DEFAULT_OPERAND;
+        operand && (this._firstOperand = operand);
     }
-    /**
-     * Builds the query from the provided SpiderParams. The returned string should be placed right after the question mark in your url.
-     * Provided params must implement SpdrParamInterface.
-     * @param params SpdrParamInterface[]
-     * @param operand string
-     */
-    build(params, operand = '&') {
-        params.forEach((param) => {
-            this.append(param, operand);
-        });
-        this._query = this._query.slice(1);
-    }
-    /**
-     * Appends a SpdrParam to the query. The default operand is '&' but you can pass your own to the second param.
-     * Provided param must implement SpdrParamInterface
-     * @param param SpdrParamInterface
-     * @param operand string
-     */
-    append(param, operand = '&') {
+    append(param, operand = this._operand) {
         this._query += `${operand}${param.query}`;
+    }
+    search(property, values, operand = this._operand) {
+        this.append(new SpdrSearch(property, values, operand));
+        return this;
+    }
+    exists(property, value = true) {
+        this.append(new SpdrExists(property, value));
+        return this;
+    }
+    range(property, operator, value, secondValue) {
+        this.append(new SpdrRange(property, operator, value, secondValue));
+        return this;
+    }
+    date(property, operator, value) {
+        this.append(new SpdrDate(property, operator, value));
+        return this;
+    }
+    order(property, direction) {
+        this.append(new SpdrOrder(property, direction));
+        return this;
+    }
+    pagination(value = true, property = SpdrPageOperator.pagination) {
+        this.append(new SpdrPagination(value, property));
+        return this;
+    }
+    pageIndex(value, property = SpdrPageOperator.page) {
+        this.append(new SpdrPageIdx(value, property));
+        return this;
+    }
+    pageSize(value, property = SpdrPageOperator.itemsPerPage) {
+        this.append(new SpdrPageSize(value, property));
+        return this;
     }
     /**
      * Returns the query.
      * The query will be empty if you didn't feed the builder with params.
      */
     get query() {
-        return this._query;
+        return this._query.slice(this._firstOperand ? this._firstOperand.length : this._operand.length);
+    }
+    /**
+     * Returns the operand used in the query building.
+     */
+    get operand() {
+        return this._operand;
+    }
+    /**
+     * Sets the operand used in the query building.
+     * @param value
+     */
+    setOperand(value) {
+        this._operand = value;
+        !this._firstOperand && (this._firstOperand = value);
+        return this;
     }
 }
+SpdrQueryBuilder._DEFAULT_OPERAND = '&';
 //# sourceMappingURL=spdrQueryBuilder.js.map

@@ -72,10 +72,12 @@ export class SpdrExists extends SpdrParam {
 export class SpdrSearch extends SpdrParam {
 
     /**
-     * @param property string
-     * @param values string[]
+     *
+     * @param property
+     * @param values
+     * @param operand
      */
-    constructor(property: string, values: string[]) {
+    constructor(property: string, values: string[], operand: string = '&') {
         super(property, SpdrOperator.equals, values);
 
         this.query = '';
@@ -84,7 +86,7 @@ export class SpdrSearch extends SpdrParam {
             this.query = `${property}${this.operator}${values[0]}`;
         } else {
             values.forEach((value, i) => {
-                let str = `${property}[]${this.operator}${value}&`;
+                let str = `${property}[]${this.operator}${value}${operand}`;
 
                 if (i === values.length - 1) {
                     str = `${property}[]${this.operator}${value}`;

@@ -52,26 +52,24 @@ API Platform has specific semantics for the built-in filters.
 With this library, you have to build `SpiderParams` for each filter, like:
 
 ```typescript
-import {SpdrSearch, SpdrExists, SpdrRange} from "./SpdrParam";
 import {SpdrQueryBuilder} from "./SpdrQueryBuilder";
 
-// create SpiderParams with values you get from your filters form on value change
-const param1 = new SpdrExists('username', true); // wether the property 'username' exists
-const param2 = new SpdrSearch('firstname', ['john']); // search for a 'john' firstname
-const param3 = new SpdrSearch('lastname', ['doe']); // search for a 'doe' lastname
-const param4 = new SpdrRange('rank', 1, 200); // search for a result with rank between 1 and 200
+const qb = new SpdrQueryBuilder(); // initialize the builder
 
-const params = [param1, param2, param3, param4];
+qb
+    .exists('username', true) // wether the property 'username' exists
+    .search('firstname', ['john']) // search for a 'john' firstname
+    .search('lastname', ['doe']) // search for a 'doe' lastname
+    .range('rank', 1, 200); // search for a result with rank between 1 and 200
 
-const queryBuilder = new SpdrQueryBuilder(params); // builds a new query with '&' as default operand
 
-this.domainService.getDomain(queryBuilder.query)
+this.domainService.getDomain(qb.query)
     .subscribe(
         // ...
     )
 ```
 
-The returned query will be formatted as `exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200`;
+`qb.query` will be formatted as `exists[username]=true&firstname=john&lastname=doe&rank[between]=1..200`;
 
 # Issues
 
