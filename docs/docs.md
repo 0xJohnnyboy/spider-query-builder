@@ -2,72 +2,86 @@
 
 ---
 - [Usage](#usage)
-- [Types Provided](#types-provided)
+- [Filters Provided](#filters-provided)
 - [Build the query](#build-the-query)
 - [Extending the library](#extending-the-library)
 ---
 
 ## Usage
-Build SpdrParams from your custom frontend filters and pass them to the query builder to get a properly formatted query for your API platform backend.
+Get a properly formatted query for your API platform backend by using **SpdrQueryBuilder** and its methods.
 This library helps you type and validate your query for basic filters. Some of them like "Boolean" or "Numeric" can be done with `SpdrSearch` since they have the same format.
 
 You can easily build your own types by extending `SpdrParam`, or by implementing `SpdrParamInterface`. Like if you need ElasticSearch specific filters or else.
 
+All the following examples are using a new instance of the **SpdrQueryBuilder**.
+
+```typescript
+import { SpdrQueryBuilder } from '@sonicfury/spdr-query-builder';
+
+const qb = new SpdrQueryBuilder();
+```
 ---
-## Types provided
-- [SpdrExists](#exists)
-- [SpdrSearch](#search)
-- [SpdrDate](#date)
-- [SpdrRange](#range)
-- [SpdrOrder](#order)
-- [SpdrPagination](#enable)
-- [SpdrPageIdx](#page-index)
-- [SpdrPageSize](#page-size)
+## Filters provided
+- [exists](#exists)
+- [search](#search)
+- [date](#date)
+- [range](#range)
+- [order](#order)
+- [pagination](#enable)
+- [pageIndex](#page-index)
+- [pageSize](#page-size)
 
 ### Exists
 [API Platform: Exists Filter](https://api-platform.com/docs/core/filters/#exists-filter)
 
 ```typescript
-import {SpdrExists} from "./spdrParam";
-
-let p = new SpdrExists('transportFees');
+qb.exists('transportFees');
 ```
-`p.query` equals `'exists[transportFees]=true'`
+`qb.query` equals `'exists[transportFees]=true'`
 
 This query will return all items where transport fees is not null.
-SpdrExists build the param with the `true` value by default, but you can set it to false.
+It builds the param with the `true` value by default, but you can set it to false.
 ```typescript
-p = new SpdrExists('transportFees', false);
+qb.exists('transportFees', false);
 ```
-`p.query` equals `'exists[transportFees]=false'`
+`qb.query` equals `'exists[transportFees]=false'`
 ### Search
 [API Platform: Search Filter](https://api-platform.com/docs/core/filters/#search-filter)
 
 ```typescript
-import {SpdrSearch} from "./spdrParam";
-
-let p = new SpdrSearch('description', ['shirt']);
+qb.search('description', ['shirt']);
 ```
-`p.query` equals `description=shirt`
+`qb.query` equals `description=shirt`
 
 As you can see, the second parameter is an array of values. The behaviour in case of multiple values is the following:
 
 ```typescript
-p = new SpdrSearch('color', ['blue', 'red', 'green'])
+qb.search('color', ['blue', 'red', 'green'])
 ```
-`p.query` equals `color[]=blue&color[]=red&color[]=green`
+`qb.query` equals `color[]=blue&color[]=red&color[]=green`
 
 This behaviour is the default for SQL 'IN' equivalent, but only works with the `exact` search strategy (see API platform docs by following the provided link for further information).
+
+Also, if you have a custom filter that needs a custom operand for multiple values ('OR' case), you can pass it as third parameter:
+
+```typescript
+qb.search('color', ['blue', 'red', 'green'], '||');
+```
+
+`qb.query` equals `color[]=blue||color[]=red||color[]=green`
+
+That won't affect the query builder's global operand.
+
 ### Date
 [API Platform: Date Filter](https://api-platform.com/docs/core/filters/#date-filter)
 
 ```typescript
-import {SpdrDate, SpdrDateOperator} from "./spdrParam";
+import {SpdrDateOperator} from "./spdrParam";
 
-const date = new Date('12/25/2022')
-let p = new SpdrDate('addedAt', SpdrDateOperator.after, date);
+const date = new Date('12/25/2022') 
+qb.date('addedAt', SpdrDateOperator.after, date);
 ```
-`p.query` equals `addedAt[after]=2022-12-25`
+`qb.query` equals `addedAt[after]=2022-12-25`
 This will return all items added after 12/25/2022.
 
 There are 4 operators that you can use.
@@ -82,11 +96,11 @@ SpdrDateOperator.strictlyAfter;
 [API Platform: Range Filter](https://api-platform.com/docs/core/filters/#range-filter)
 
 ```typescript
-import {SpdrRange, SpdrRangeOperator} from "./spdrParam";
+import {SpdrRangeOperator} from "./spdrParam";
 
-let p = new SpdrRange('price', SpdrRangeOperator.lt, 10);
+qb.range('price', SpdrRangeOperator.lt, 10);
 ```
-`p.query` equals `price[lt]=10`
+`qb.query` equals `price[lt]=10`
 
 This will return all items with price lower than 10.
 There are 5 operators that you can use.
@@ -102,19 +116,19 @@ SpdrRangeOperator.between
 For `SpdrRangeOperator.between` you have to provide a second value.
 
 ```typescript
-p = new SpdrRange('price', SpdrRangeOperator.between, 10, 100);
+qb.range('price', SpdrRangeOperator.between, 10, 100);
 ```
-`p.query` equals `price[between]=10..100`
+`qb.query` equals `price[between]=10..100`
 
 ### Order
 [API Platform: Order Filter](https://api-platform.com/docs/core/filters/#ordering-filter-sorting)
 
 ```typescript
-import {SpdrOrder, SpdrOrderOperator} from "./spdrParam";
+import {SpdrOrderOperator} from "./spdrParam";
 
-let p = new SpdrOrder('name', SpdrOrderOperator.asc);
+qb.order('name', SpdrOrderOperator.asc);
 ```
-`p.query` equals `order[name]=asc`
+`qb.query` equals `order[name]=asc`
 
 You can use the `SpdrOrderOperator.desc` to sort descending.
 
@@ -124,108 +138,111 @@ You can handle pagination too.
 [API Platform: Let client enable pagination](https://api-platform.com/docs/core/pagination/#disabling-the-pagination-client-side-globally)
 
 ```typescript
-import {SpdrPagination} from "./spdrParam";
-
-let p = new SpdrPagination();
+qb.pagination();
 ```
-`p.query` equals `pagination=true`
+`qb.query` equals `pagination=true`
 
 You can disable pagination by passing `false` as the first argument.
 If you want to use a custom parameter name, just pass it as the second argument.
 
 ```typescript
-p = new SpdrPagination(false, 'enable_pagination');
+qb.pagination(false, 'enable_pagination');
 ```
-`p.query` equals `enable_pagination=false`
+`qb.query` equals `enable_pagination=false`
 
 #### Page index
 [API Platform: Define page index client-side](https://api-platform.com/docs/core/pagination/#pagination)
 
 ```typescript
-import {SpdrPageIdx} from "./spdrParam";
-
-let p = new SpdrPageIdx(14);
+qb.pageIndex(14);
 ```
-`p.query` equals `page=14`
+`qb.query` equals `page=14`
 
 ```typescript
-p = new SpdrPageIdx(14, 'offset');
+qb.pageIndex(14, 'offset');
 ```
-`p.query` equals `offset=14`
+`qb.query` equals `offset=14`
 
 #### Page size
 [API Platform: Define items per page client-side](https://api-platform.com/docs/core/pagination/#changing-the-number-of-items-per-page-client-side)
 
 ```typescript
-import {SpdrPageSize} from "./spdrParam";
-
-let p = SpdrPageSize(15);
+qb.pageSize(15);
 ```
-`p.query` equals `itemsPerPage=15`
+`qb.query` equals `itemsPerPage=15`
 
 ```typescript
-p = new SpdrPageSize(15, 'limit')
+qb.pageSize(15, 'limit')
 ```
-`p.query` equals `limit=15`
+`qb.query` equals `limit=15`
 
 ---
 
 ## Build the query
 
-The query builder takes an array of SpdrParam as argument and builds a query string that you can append to your API url.
+The query builder takes as many parameters as you want and builds automatically a query string that you can append to your API url.
 
 ```typescript
 import {SpdrQueryBuilder} from "./spdrQueryBuilder";
 
-const params = [
-    new SpdrExists('isActive', true),
-    new SpdrSearch('name', ['John Doe', 'Jane Doe']),
-    new SpdrRange('orders', SpdrRangeOperator.between, 0, 10),
-    new SpdrOrder('name', SpdrOrderOperator.asc),
-    new SpdrPageIdx(2, '_page'),
-    new SpdrPageSize(10)
-]
-const qb = new SpdrQueryBuilder(params);
+const qb = new SpdrQueryBuilder()
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe'])
+    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .range('orders', SpdrRangeOperator.between, 0, 10)
+    .order('name', SpdrOrderOperator.asc)
+    .pageIndex(2, '_page')
+    .pageSize(10);
+
+// for example
+this.domainService.get(qb.query);
 ```
 
 `qb.query` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`
 
-### Add params manually
-
-If you want, you can use the `append()` method to append manually a SpdrParam to the query.
-
-```typescript
-
-const newParam = SpdrSearch('middleName', ['karl', 'carl']);
-
-qb.append(newParam);
-```
-`qb.query` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10&middleName[]=karl&middleName[]=carl`
-
 ### Define a custom operand
-Maybe you have custom filters with custom operands.
-Say you have defined a custom OR filter, with a double pipe `||` as operand. Just pass it as a second argument.
+If you need a custom operand to be applied to your query, you have 2 ways to set it.
+First way is in the constructor:
 
 ```typescript
-const OR = '||';
+const CUSTOM_OPERAND = '&&';
 
-const params = [
-    new SpdrSearch('firstname', 'jane'),
-    new SpdrSearch('firstname', 'john')
-];
+const qb = new SpdrQueryBuilder(CUSTOM_OPERAND);
 
-const qb = new SpdrQueryBuilder(params, OR);
+qb
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe'])
+
 ```
-`qb.query` equals `firstname=jane||firstname=john`
+`qb.query` equals `exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe`
 
-Sometimes you just need a custom operand for one param. Pass it to the `append()` method:
+Second way is the `setOperand` method:
 
 ```typescript
-const CUSTOM_OPERAND = '++';
-const p = new SpdrSearch('color', 'yellow');
-qb.append(p, CUSTOM_OPERAND);
+const qb = new SpdrQueryBuilder()
+
+qb
+    .setOperand('&&')
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe'])
 ```
-`qb.query` equals `firstname=jane||firstname=john++color=yellow`
+`qb.query` equals `exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe`
+
+You can use this method multiple times:
+
+```typescript
+const qb = new SpdrQueryBuilder('&&')
+
+qb
+    .exists('isActive', true)
+    .search('name', ['John Doe'])
+    .setOperand('!!')
+    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .setOperand('&')
+    .range('orders', SpdrRangeOperator.between, 0, 10)
+
+```
+`qb.query` equals `exists[isActive]=true&&name=John Doe!!addedAt[strictly_before]=${isoString}&orders[between]=0..10`
 
 ---
 
@@ -233,3 +250,25 @@ qb.append(p, CUSTOM_OPERAND);
 Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `SpdrParam` abstract
 class. Plus, the `SpdrQueryBuilder` expects an implementation of the `SpdrParamInterface` so you can even create
 your own abstract class that will suit you best.
+You can either append your custom param directly to the `SpdrQueryBuilder` or you can extend the query builder.
+Use the `append()` method in the first case:
+
+```typescript
+import {SpdrOperator, SpdrParamInterface} from "./spdrParam";
+
+class MyCustomParam implements SpdrParamInterface {
+    query: string;
+    operator: SpdrOperator = SpdrOperator.equals;
+
+    constructor(property: string, value: string) {
+        this.query = `${property}${this.operator}${value}`;
+    }
+}
+
+const qb = new SpdrQueryBuilder();
+
+qb.append(
+    new MyCustomParam('myCustomParam', 'myValue')
+);
+```
+`qb.query` equals `myCustomParam=myValue`

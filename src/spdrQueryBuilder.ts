@@ -1,42 +1,82 @@
-import {SpdrParam, SpdrParamInterface} from "./spdrParam";
+import {
+    SpdrDate,
+    SpdrDateOperator,
+    SpdrExists,
+    SpdrOrder,
+    SpdrOrderOperator,
+    SpdrPageIdx,
+    SpdrPageOperator,
+    SpdrPageSize,
+    SpdrPagination,
+    SpdrParamInterface,
+    SpdrRange,
+    SpdrRangeOperator,
+    SpdrSearch
+} from "./spdrParam";
 
 export class SpdrQueryBuilder {
 
-    private _query = '';
+    private static readonly _DEFAULT_OPERAND = '&';
+    private _query: string;
+    private _operand: string;
+    private _firstOperand: string;
 
-    /**
-     * Constructing a new SpdrQueryBuilder builds the query if you pass params.
-     * In this case, the query will be built with the default operand '&'.
-     * To override this behavior, you can construct an empty builder and manually append each SpdrParam according to your needs.
-     * @param params SpdrParam[]
-     */
-    constructor(params?: SpdrParam[]) {
-        params && this.build(params);
+    constructor(operand?: string) {
+        this._query = '';
+        this._operand = operand ?? SpdrQueryBuilder._DEFAULT_OPERAND;
+        operand && (this._firstOperand = operand);
     }
 
-    /**
-     * Builds the query from the provided SpiderParams. The returned string should be placed right after the question mark in your url.
-     * Provided params must implement SpdrParamInterface.
-     * @param params SpdrParamInterface[]
-     * @param operand string
-     */
-    build(params: SpdrParamInterface[], operand: string = '&') {
-
-        params.forEach((param) => {
-            this.append(param, operand)
-        })
-
-        this._query = this._query.slice(1);
-    }
-
-    /**
-     * Appends a SpdrParam to the query. The default operand is '&' but you can pass your own to the second param.
-     * Provided param must implement SpdrParamInterface
-     * @param param SpdrParamInterface
-     * @param operand string
-     */
-    append(param: SpdrParamInterface, operand: string = '&') {
+    public append(param: SpdrParamInterface, operand: string = this._operand) {
         this._query += `${operand}${param.query}`;
+    }
+
+    public search(property: string, values: string[], operand: string = this._operand): SpdrQueryBuilder {
+        this.append(new SpdrSearch(property, values, operand));
+
+        return this;
+    }
+
+    public exists(property: string, value: boolean = true): SpdrQueryBuilder {
+        this.append(new SpdrExists(property, value));
+
+        return this;
+    }
+
+    public range(property: string, operator: SpdrRangeOperator, value: number, secondValue?: number): SpdrQueryBuilder {
+        this.append(new SpdrRange(property, operator, value, secondValue));
+
+        return this;
+    }
+
+    public date(property: string, operator: SpdrDateOperator, value: Date): SpdrQueryBuilder {
+        this.append(new SpdrDate(property, operator, value));
+
+        return this;
+    }
+
+    public order(property: string, direction: SpdrOrderOperator): SpdrQueryBuilder {
+        this.append(new SpdrOrder(property, direction));
+
+        return this;
+    }
+
+    public pagination(value: boolean = true, property: string = SpdrPageOperator.pagination): SpdrQueryBuilder {
+        this.append(new SpdrPagination(value, property));
+
+        return this;
+    }
+
+    public pageIndex(value: number, property: string = SpdrPageOperator.page): SpdrQueryBuilder {
+        this.append(new SpdrPageIdx(value, property));
+
+        return this;
+    }
+
+    public pageSize(value: number, property: string = SpdrPageOperator.itemsPerPage): SpdrQueryBuilder {
+        this.append(new SpdrPageSize(value, property));
+
+        return this;
     }
 
     /**
@@ -44,6 +84,24 @@ export class SpdrQueryBuilder {
      * The query will be empty if you didn't feed the builder with params.
      */
     get query(): string {
-        return this._query;
+        return this._query.slice(this._firstOperand ? this._firstOperand.length : this._operand.length);
+    }
+
+    /**
+     * Returns the operand used in the query building.
+     */
+    get operand(): string {
+        return this._operand;
+    }
+
+    /**
+     * Sets the operand used in the query building.
+     * @param value
+     */
+    setOperand(value: string): SpdrQueryBuilder {
+        this._operand = value;
+        !this._firstOperand && (this._firstOperand = value);
+
+        return this;
     }
 }

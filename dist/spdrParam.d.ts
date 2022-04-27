@@ -39,10 +39,12 @@ export declare class SpdrExists extends SpdrParam {
 }
 export declare class SpdrSearch extends SpdrParam {
     /**
-     * @param property string
-     * @param values string[]
+     *
+     * @param property
+     * @param values
+     * @param operand
      */
-    constructor(property: string, values: string[]);
+    constructor(property: string, values: string[], operand?: string);
 }
 export declare class SpdrDate extends SpdrParam {
     /**

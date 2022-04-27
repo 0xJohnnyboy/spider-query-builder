@@ -1,49 +1,99 @@
 import * as chai from 'chai';
 import {
     SpdrDateOperator,
-    SpdrDate,
-    SpdrExists,
-    SpdrPageIdx,
-    SpdrPageSize,
     SpdrQueryBuilder,
     SpdrRangeOperator,
-    SpdrRange,
-    SpdrSearch,
-    SpdrOrder,
     SpdrOrderOperator
 } from "../src";
 
 chai.should();
 
+const date: Date = new Date();
+const isoString = date.toISOString().slice(0, 10);
+
 describe('Testing SpdrQueryBuilder', () => {
-    it('should build a query equal to exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10', () => {
-        const date: Date = new Date();
-        const isoString = date.toISOString().slice(0, 10);
+    it('should build a query equal to exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10',
+        () => {
+            const expectedQuery = `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`;
 
-        const params = [
-            new SpdrExists('isActive', true),
-            new SpdrSearch('name', ['John Doe', 'Jane Doe']),
-            new SpdrDate('addedAt', SpdrDateOperator.strictlyBefore, date),
-            new SpdrRange('orders', SpdrRangeOperator.between, 0, 10),
-            new SpdrOrder('name', SpdrOrderOperator.asc),
-            new SpdrPageIdx(2, '_page'),
-            new SpdrPageSize(10)
-        ]
+            const qb = new SpdrQueryBuilder()
+                .exists('isActive', true)
+                .search('name', ['John Doe', 'Jane Doe'])
+                .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+                .range('orders', SpdrRangeOperator.between, 0, 10)
+                .order('name', SpdrOrderOperator.asc)
+                .pageIndex(2, '_page')
+                .pageSize(10);
 
-        const expectedQuery = `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`;
+            qb.query.should.equal(expectedQuery);
+        });
+    it('should append "order[name]=asc" to "name=John Doe"', () => {
 
-        const qb = new SpdrQueryBuilder(params);
+        const qb = new SpdrQueryBuilder()
+            .search('name', ['John Doe'])
+
+        const expectedQuery = 'name=John Doe';
+        qb.query.should.equal(expectedQuery);
+
+        qb.order('name', SpdrOrderOperator.asc);
+
+        qb.query.should.equal('name=John Doe&order[name]=asc');
+    });
+
+    it('should build a query equal to exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe', () => {
+
+        const qb = new SpdrQueryBuilder('&&')
+
+        qb
+            .exists('isActive', true)
+            .search('name', ['John Doe', 'Jane Doe'])
+
+        const expectedQuery = `exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe`;
 
         qb.query.should.equal(expectedQuery);
     });
-    it('should append "order[name]=asc" to "name=John Doe"', () => {
-        const qb = new SpdrQueryBuilder([
-            new SpdrSearch('name', ['John Doe'])
-        ]);
-        const param = new SpdrOrder('name', SpdrOrderOperator.asc);
 
-        qb.append(param);
+    it('should build a query equal to exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe', () => {
 
-        qb.query.should.equal('name=John Doe&order[name]=asc');
+        const qb = new SpdrQueryBuilder()
+
+        qb
+            .setOperand('&&')
+            .exists('isActive', true)
+            .search('name', ['John Doe', 'Jane Doe'])
+
+        const expectedQuery = `exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe`;
+
+        qb.query.should.equal(expectedQuery);
+    });
+
+    it('should build a query equal to exists[isActive]=true&&name[]=John Doe||name[]=Jane Doe', () => {
+
+        const qb = new SpdrQueryBuilder()
+
+        qb
+            .setOperand('&&')
+            .exists('isActive', true)
+            .search('name', ['John Doe', 'Jane Doe'], '||')
+
+        const expectedQuery = `exists[isActive]=true&&name[]=John Doe||name[]=Jane Doe`;
+
+        qb.query.should.equal(expectedQuery);
+    });
+
+    it('should build a query equal to exists[isActive]=true&&name=John Doe!!addedAt[strictly_before]=${isoString}&orders[between]=0..10', () => {
+        const qb = new SpdrQueryBuilder('&&')
+
+        qb
+            .exists('isActive', true)
+            .search('name', ['John Doe'])
+            .setOperand('!!')
+            .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+            .setOperand('&')
+            .range('orders', SpdrRangeOperator.between, 0, 10)
+
+        const expectedQuery = `exists[isActive]=true&&name=John Doe!!addedAt[strictly_before]=${isoString}&orders[between]=0..10`;
+
+        qb.query.should.equal(expectedQuery);
     });
 })
