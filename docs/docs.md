@@ -318,8 +318,6 @@ because the last time sets the operand to `&`
 Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `SpdrParam` abstract
 class. Plus, the `SpdrQueryBuilder` expects an implementation of the `SpdrParamInterface` so you can even create
 your own abstract class that will suit you best.
-You can either append your custom param directly to the `SpdrQueryBuilder` or you can extend the query builder.
-Use the `append()` method in the first case:
 
 ```typescript
 import {SpdrOperator, SpdrParamInterface} from "./spdrParam";
@@ -332,11 +330,10 @@ class MyCustomParam implements SpdrParamInterface {
         this.query = `${property}${this.operator}${value}`;
     }
 }
-
-const qb = new SpdrQueryBuilder();
-
-qb.append(
-    new MyCustomParam('myCustomParam', 'myValue')
-);
+```
+You'll have to implement a custom method in you own `SpdrQueryBuilder` definition, and that should eventually give:
+```typescript
+const qb = new CustomQueryBuilder();
+qb.customMethod('myCustomParam', 'myCustomValue');
 ```
 `qb.query` equals `myCustomParam=myValue`
