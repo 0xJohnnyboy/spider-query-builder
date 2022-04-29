@@ -22,14 +22,17 @@ const qb = new SpdrQueryBuilder();
 ```
 ---
 ## Filters provided
-- [exists](#exists)
-- [search](#search)
-- [date](#date)
-- [range](#range)
-- [order](#order)
-- [pagination](#enable)
-- [pageIndex](#page-index)
-- [pageSize](#page-size)
+- Params
+  - [exists](#exists)
+  - [search](#search)
+  - [date](#date)
+  - [range](#range)
+- Sort
+  - [order](#order)
+- Pagination
+  - [enablePagination](#enable)
+  - [pageIndex](#page-index)
+  - [pageSize](#page-size)
 
 ### Exists
 [API Platform: Exists Filter](https://api-platform.com/docs/core/filters/#exists-filter)
@@ -146,7 +149,7 @@ You can disable pagination by passing `false` as the first argument.
 If you want to use a custom parameter name, just pass it as the second argument.
 
 ```typescript
-qb.pagination(false, 'enable_pagination');
+qb.enablePagination(false, 'enable_pagination');
 ```
 `qb.query` equals `enable_pagination=false`
 
@@ -200,6 +203,70 @@ this.domainService.get(qb.query);
 
 `qb.query` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`
 
+### Clearing
+You can remove all params matching a property by calling `qb.remove(property, type)` with property as a `string` and type as a `SpdrParamType`.
+By passing only the property as a string, all params matching the property will be removed, no matter what their type is.
+Passing a `SpdrParamType` lets you be more precise and remove only params matching the property of the passed type.
+
+#### Example
+
+```typescript
+
+const qb = new SpdrQueryBuilder()
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe'])
+    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .range('orders', SpdrRangeOperator.between, 0, 10)
+    .order('name', SpdrOrderOperator.asc)
+    .pageIndex(2, '_page')
+    .pageSize(10);
+```
+At this point `qb.query` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10`
+
+- `qb.remove('name', SpdrParamType.param)` would get you `exists[isActive]=true&addedAt[strictly_before]=${isoString}&orders[between]=0..10&order[name]=asc&_page=2&itemsPerPage=10` . It has only removed the `search` filters on the 'name' property.
+- `qb.remove('name')` would get you `exists[isActive]=true&addedAt[strictly_before]=${isoString}&orders[between]=0..10&_page=2&itemsPerPage=10` . You can see it has removed the `order` filter on the 'name' as well.
+
+
+You can also clear the query builder by calling `qb.clear(type)`.
+This lets you start a new query and keep the previous ones in history.
+The behaviour is somewhat similar to the `qb.remove` method, in the way you can call the method with no arguments to remove all filters, or with a `SpdrParamType` to remove only filters of the passed type.
+
+#### Example
+
+```typescript
+const qb = new SpdrQueryBuilder()
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe'])
+```
+At this point, `qb.query` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe`
+
+```typescript
+qb.clear()
+```
+`qb.query` is now empty.
+
+```typescript
+qb
+    .search('name', ['John Doe', 'Jane Doe'])
+    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+```
+Now, `qb.query` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}`
+
+`qb.previousQuery` equals `exists[isActive]=true&name[]=John Doe&name[]=Jane Doe`
+
+```typescript
+qb.clear()
+    .search('name', ['John Doe', 'Jane Doe'])
+    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .range('orders', SpdrRangeOperator.between, 0, 10)
+```
+At the end, `qb.query` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10`
+
+`qb.previousQuery` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}`
+
+But you can still get back to the first one by looking into `qb.history()`
+You can also clear history by calling `qb.clearHistory()`. This lets you get a fresh start with the same instance (if you set a custom operand for example).
+
 ### Define a custom operand
 If you need a custom operand to be applied to your query, you have 2 ways to set it.
 First way is in the constructor:
@@ -228,7 +295,7 @@ qb
 ```
 `qb.query` equals `exists[isActive]=true&&name[]=John Doe&&name[]=Jane Doe`
 
-You can use this method multiple times:
+You can use this method multiple times, but it will override the operand each time:
 
 ```typescript
 const qb = new SpdrQueryBuilder('&&')
@@ -242,7 +309,8 @@ qb
     .range('orders', SpdrRangeOperator.between, 0, 10)
 
 ```
-`qb.query` equals `exists[isActive]=true&&name=John Doe!!addedAt[strictly_before]=${isoString}&orders[between]=0..10`
+`qb.query` equals `exists[isActive]=true&name=John Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10`
+because the last time sets the operand to `&`
 
 ---
 
