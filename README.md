@@ -26,7 +26,7 @@ This typescript library is designed to help you interact between your front end 
 help you build your query from a filters form with typing etc.
 
 # License
-This project is under MIT License
+This project is under AGPL 3 License
 
 [See license](LICENSE)
 
