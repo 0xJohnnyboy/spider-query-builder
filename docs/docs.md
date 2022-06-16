@@ -9,9 +9,9 @@
 
 ## Usage
 Get a properly formatted query for your API platform backend by using **SpdrQueryBuilder** and its methods.
-This library helps you type and validate your query for basic filters. Some of them like "Boolean" or "Numeric" can be done with `SpdrSearch` since they have the same format.
+This library helps you type and validate your query for basic filters. Some of them like "Boolean" or "Numeric" can be done with `Search` since they have the same format.
 
-You can easily build your own types by extending `SpdrParam`, or by implementing `SpdrParamInterface`. Like if you need ElasticSearch specific filters or else.
+You can easily build your own types by extending `Spdr`, or by implementing `SpdrParamInterface`. Like if you need ElasticSearch specific filters or else.
 
 All the following examples are using a new instance of the **SpdrQueryBuilder**.
 
@@ -79,10 +79,10 @@ That won't affect the query builder's global operand.
 [API Platform: Date Filter](https://api-platform.com/docs/core/filters/#date-filter)
 
 ```typescript
-import {SpdrDateOperator} from "./spdrParam";
+import {DateOperator} from "./spdrParam";
 
 const date = new Date('12/25/2022') 
-qb.date('addedAt', SpdrDateOperator.after, date);
+qb.date('addedAt', DateOperator.after, date);
 ```
 `qb.query` equals `addedAt[after]=2022-12-25`
 This will return all items added after 12/25/2022.
@@ -90,18 +90,18 @@ This will return all items added after 12/25/2022.
 There are 4 operators that you can use.
 
 ```typescript
-SpdrDateOperator.before;
-SpdrDateOperator.after;
-SpdrDateOperator.strictlyBefore;
-SpdrDateOperator.strictlyAfter;
+DateOperator.before;
+DateOperator.after;
+DateOperator.strictlyBefore;
+DateOperator.strictlyAfter;
 ```
 ### Range
 [API Platform: Range Filter](https://api-platform.com/docs/core/filters/#range-filter)
 
 ```typescript
-import {SpdrRangeOperator} from "./spdrParam";
+import {RangeOperator} from "./spdrParam";
 
-qb.range('price', SpdrRangeOperator.lt, 10);
+qb.range('price', RangeOperator.lt, 10);
 ```
 `qb.query` equals `price[lt]=10`
 
@@ -109,17 +109,17 @@ This will return all items with price lower than 10.
 There are 5 operators that you can use.
 
 ```typescript
-SpdrRangeOperator.lt;
-SpdrRangeOperator.lte; // 'lower than or equal'
-SpdrRangeOperator.gt;
-SpdrRangeOperator.gte; // 'greater than or equal'
-SpdrRangeOperator.between
+RangeOperator.lt;
+RangeOperator.lte; // 'lower than or equal'
+RangeOperator.gt;
+RangeOperator.gte; // 'greater than or equal'
+RangeOperator.between
 ```
 
-For `SpdrRangeOperator.between` you have to provide a second value.
+For `RangeOperator.between` you have to provide a second value.
 
 ```typescript
-qb.range('price', SpdrRangeOperator.between, 10, 100);
+qb.range('price', RangeOperator.between, 10, 100);
 ```
 `qb.query` equals `price[between]=10..100`
 
@@ -127,13 +127,13 @@ qb.range('price', SpdrRangeOperator.between, 10, 100);
 [API Platform: Order Filter](https://api-platform.com/docs/core/filters/#ordering-filter-sorting)
 
 ```typescript
-import {SpdrOrderOperator} from "./spdrParam";
+import {OrderOperator} from "./spdrParam";
 
-qb.order('name', SpdrOrderOperator.asc);
+qb.order('name', OrderOperator.asc);
 ```
 `qb.query` equals `order[name]=asc`
 
-You can use the `SpdrOrderOperator.desc` to sort descending.
+You can use the `OrderOperator.desc` to sort descending.
 
 ### Pagination
 You can handle pagination too.
@@ -191,9 +191,9 @@ import {SpdrQueryBuilder} from "./spdrQueryBuilder";
 const qb = new SpdrQueryBuilder()
     .exists('isActive', true)
     .search('name', ['John Doe', 'Jane Doe'])
-    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
-    .range('orders', SpdrRangeOperator.between, 0, 10)
-    .order('name', SpdrOrderOperator.asc)
+    .date('addedAt', DateOperator.strictlyBefore, date)
+    .range('orders', RangeOperator.between, 0, 10)
+    .order('name', OrderOperator.asc)
     .pageIndex(2, '_page')
     .pageSize(10);
 
@@ -215,9 +215,9 @@ Passing a `SpdrParamType` lets you be more precise and remove only params matchi
 const qb = new SpdrQueryBuilder()
     .exists('isActive', true)
     .search('name', ['John Doe', 'Jane Doe'])
-    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
-    .range('orders', SpdrRangeOperator.between, 0, 10)
-    .order('name', SpdrOrderOperator.asc)
+    .date('addedAt', DateOperator.strictlyBefore, date)
+    .range('orders', RangeOperator.between, 0, 10)
+    .order('name', OrderOperator.asc)
     .pageIndex(2, '_page')
     .pageSize(10);
 ```
@@ -248,7 +248,7 @@ qb.clear()
 ```typescript
 qb
     .search('name', ['John Doe', 'Jane Doe'])
-    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .date('addedAt', DateOperator.strictlyBefore, date)
 ```
 Now, `qb.query` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}`
 
@@ -257,8 +257,8 @@ Now, `qb.query` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]
 ```typescript
 qb.clear()
     .search('name', ['John Doe', 'Jane Doe'])
-    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
-    .range('orders', SpdrRangeOperator.between, 0, 10)
+    .date('addedAt', DateOperator.strictlyBefore, date)
+    .range('orders', RangeOperator.between, 0, 10)
 ```
 At the end, `qb.query` equals `name[]=John Doe&name[]=Jane Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10`
 
@@ -304,9 +304,9 @@ qb
     .exists('isActive', true)
     .search('name', ['John Doe'])
     .setOperand('!!')
-    .date('addedAt', SpdrDateOperator.strictlyBefore, date)
+    .date('addedAt', DateOperator.strictlyBefore, date)
     .setOperand('&')
-    .range('orders', SpdrRangeOperator.between, 0, 10)
+    .range('orders', RangeOperator.between, 0, 10)
 
 ```
 `qb.query` equals `exists[isActive]=true&name=John Doe&addedAt[strictly_before]=${isoString}&orders[between]=0..10`
@@ -314,17 +314,44 @@ because the last time sets the operand to `&`
 
 ---
 
+## Setting params
+You may want to set manually the params. For example, you can get the params lists, save them into `localStorage` and set them back when needed.
+
+The query builder exposes a getter and a setter for each list, rebuilding the query automatically every time you'll set a list.
+
+Example:
+
+```typescript
+import {SpdrQueryBuilder} from "./spdrQueryBuilder";
+
+const qb = new SpdrQueryBuilder()
+const qb2 = new SpdrQueryBuilder()
+
+qb
+    .exists('isActive', true)
+    .search('name', ['John Doe', 'Jane Doe']);
+
+localStorage.setItem('params', JSON.stringify(qb.params))
+
+const jsonParams = localStorage.getItem('params')
+
+qb2.params = JSON.parse(params)
+```
+`qb` and `qb2` will output the same query. This also works with `qb.sortParams` and `qb.paginationParams`.
+
+---
+
 ## Extending the library
-Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `SpdrParam` abstract
+Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `Spdr` abstract
 class. Plus, the `SpdrQueryBuilder` expects an implementation of the `SpdrParamInterface` so you can even create
 your own abstract class that will suit you best.
 
 ```typescript
-import {SpdrOperator, SpdrParamInterface} from "./spdrParam";
+import {Operator, SpdrParamInterface} from "./spdrParam";
 
 class MyCustomParam implements SpdrParamInterface {
     query: string;
-    operator: SpdrOperator = SpdrOperator.equals;
+    operator: Operator = Operator.equals;
 
     constructor(property: string, value: string) {
         this.query = `${property}${this.operator}${value}`;

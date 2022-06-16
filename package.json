@@ -1,7 +1,7 @@
 {
   "name": "@sonicfury/spider-query-builder",
   "description": "Offers typing and query params building for API Platform",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "author": {
     "name": "Théo LAMBERT",
     "email": "theo.lambert@viacesi.fr"
@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "cross-env TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' mocha --require ts-node/register ./test/*.spec.ts",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register --reporter=Nyan 'test/*.spec.ts'",
     "build": "tsc"
   },
   "dependencies": {
@@ -22,7 +22,6 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.12",
     "chai": "^4.3.4",
-    "cross-env": "^7.0.3",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0"
   }
