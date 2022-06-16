@@ -9,9 +9,9 @@
 
 ## Usage
 Get a properly formatted query for your API platform backend by using **SpdrQueryBuilder** and its methods.
-This library helps you type and validate your query for basic filters. Some of them like "Boolean" or "Numeric" can be done with `Search` since they have the same format.
+This library helps you type and validate your query for basic filters. Some of them like "Boolean" or "Numeric" can be done with `qb.search()` since they have the same format.
 
-You can easily build your own types by extending `Spdr`, or by implementing `SpdrParamInterface`. Like if you need ElasticSearch specific filters or else.
+You can easily build your own types by extending `SpdrParam`, or by implementing `SpdrParamInterface`. Like if you need ElasticSearch specific filters or else.
 
 All the following examples are using a new instance of the **SpdrQueryBuilder**.
 
@@ -342,7 +342,7 @@ qb2.params = JSON.parse(params)
 ---
 
 ## Extending the library
-Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `Spdr` abstract
+Only basic default filters are supported but you can easily create your own `SpdrParam` by extending `SpdrParam` abstract
 class. Plus, the `SpdrQueryBuilder` expects an implementation of the `SpdrParamInterface` so you can even create
 your own abstract class that will suit you best.
 
