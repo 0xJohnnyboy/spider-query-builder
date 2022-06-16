@@ -2,16 +2,16 @@
  * Copyright (c) 2021 Théo Lambert
  */
 /**
- * SpdrParam Abstract Class
+ * Spdr Abstract Class
  * You should extend this for your custom purposes.
  * The SpdrQueryBuilder expects SpdrParamInterface[] as a parameter, though.
  * This means you can create your own abstract implementation.
  */
 export class SpdrParam {
     /**
-     * SpdrParam base constructor
+     * Spdr SpdrParam base constructor
      * @param property string
-     * @param operator SpdrOperator | SpdrRangeOperator | SpdrDateOperator
+     * @param operator Operator | RangeOperator | DateOperator
      * @param value any
      * @protected
      */
@@ -42,7 +42,7 @@ export class SpdrExists extends SpdrParam {
      * @param value boolean
      */
     constructor(property, value) {
-        super(property, SpdrOperator.exists, value);
+        super(property, Operator.exists, value);
         this.query = `${this.operator}[${property}]=${value.toString()}`;
     }
 }
@@ -54,7 +54,7 @@ export class SpdrSearch extends SpdrParam {
      * @param operand
      */
     constructor(property, values, operand = '&') {
-        super(property, SpdrOperator.equals, values);
+        super(property, Operator.equals, values);
         this.query = '';
         if (values.length === 1) {
             this.query = `${property}${this.operator}${values[0]}`;
@@ -72,9 +72,9 @@ export class SpdrSearch extends SpdrParam {
 }
 export class SpdrDate extends SpdrParam {
     /**
-     * The date will be formatted in YYYY-MM-DD format, implement a new SpdrParam if you need another formatting.
+     * The date will be formatted in YYYY-MM-DD format, implement a new Spdr if you need another formatting.
      * @param property string
-     * @param operator SpdrDateOperator
+     * @param operator DateOperator
      * @param value Date
      */
     constructor(property, operator, value) {
@@ -86,13 +86,13 @@ export class SpdrRange extends SpdrParam {
     /**
      * The secondValue parameter is required for the 'between' operator
      * @param property string
-     * @param operator SpdrRangeOperator
+     * @param operator RangeOperator
      * @param value number
      * @param secondValue number // optional
      */
     constructor(property, operator, value, secondValue) {
         super(property, operator, value);
-        this.query = !!secondValue && operator === SpdrRangeOperator.between ?
+        this.query = !!secondValue && operator === RangeOperator.between ?
             `${property}[${operator}]=${value.toString()}..${secondValue.toString()}`
             : `${property}[${operator}]=${value.toString()}`;
     }
@@ -100,10 +100,10 @@ export class SpdrRange extends SpdrParam {
 export class SpdrOrder extends SpdrParam {
     /**
      * @param property string
-     * @param value SpdrOrderOperator
+     * @param value OrderOperator
      */
     constructor(property, value) {
-        super(property, SpdrOperator.sort, value);
+        super(property, Operator.sort, value);
         this.query = `${this.operator}[${property}]=${value}`;
     }
 }
@@ -112,8 +112,8 @@ export class SpdrPagination extends SpdrParam {
      * @param value boolean
      * @param property string ('pagination' by default)
      */
-    constructor(value = true, property = SpdrPageOperator.pagination) {
-        super(property, SpdrOperator.equals, value);
+    constructor(value = true, property = PageOperator.pagination) {
+        super(property, Operator.equals, value);
         this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
@@ -122,8 +122,8 @@ export class SpdrPageIdx extends SpdrParam {
      * @param value number
      * @param property string ('page' by default)
      */
-    constructor(value, property = SpdrPageOperator.page) {
-        super(property, SpdrOperator.equals, value);
+    constructor(value, property = PageOperator.page) {
+        super(property, Operator.equals, value);
         this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
@@ -132,8 +132,8 @@ export class SpdrPageSize extends SpdrParam {
      * @param value number
      * @param property string ('itemsPerPage' by default)
      */
-    constructor(value, property = SpdrPageOperator.itemsPerPage) {
-        super(property, SpdrOperator.equals, value);
+    constructor(value, property = PageOperator.itemsPerPage) {
+        super(property, Operator.equals, value);
         this.query = `${property.toString()}${this.operator}${value.toString()}`;
     }
 }
@@ -141,52 +141,52 @@ export class SpdrPageSize extends SpdrParam {
  * Base operators
  * @enum string
  */
-export var SpdrOperator;
-(function (SpdrOperator) {
-    SpdrOperator["exists"] = "exists";
-    SpdrOperator["equals"] = "=";
-    SpdrOperator["sort"] = "order";
-})(SpdrOperator || (SpdrOperator = {}));
+export var Operator;
+(function (Operator) {
+    Operator["exists"] = "exists";
+    Operator["equals"] = "=";
+    Operator["sort"] = "order";
+})(Operator || (Operator = {}));
 /**
  * Sort values
  * @enum string
  */
-export var SpdrOrderOperator;
-(function (SpdrOrderOperator) {
-    SpdrOrderOperator["asc"] = "asc";
-    SpdrOrderOperator["desc"] = "desc";
-})(SpdrOrderOperator || (SpdrOrderOperator = {}));
+export var OrderOperator;
+(function (OrderOperator) {
+    OrderOperator["asc"] = "asc";
+    OrderOperator["desc"] = "desc";
+})(OrderOperator || (OrderOperator = {}));
 /**
  * Range and comparison operators
  * @enum string
  */
-export var SpdrRangeOperator;
-(function (SpdrRangeOperator) {
-    SpdrRangeOperator["lt"] = "lt";
-    SpdrRangeOperator["lte"] = "lte";
-    SpdrRangeOperator["gt"] = "gt";
-    SpdrRangeOperator["gte"] = "gte";
-    SpdrRangeOperator["between"] = "between";
-})(SpdrRangeOperator || (SpdrRangeOperator = {}));
+export var RangeOperator;
+(function (RangeOperator) {
+    RangeOperator["lt"] = "lt";
+    RangeOperator["lte"] = "lte";
+    RangeOperator["gt"] = "gt";
+    RangeOperator["gte"] = "gte";
+    RangeOperator["between"] = "between";
+})(RangeOperator || (RangeOperator = {}));
 /**
  * Date comparison operators
  * @enum string
  */
-export var SpdrDateOperator;
-(function (SpdrDateOperator) {
-    SpdrDateOperator["after"] = "after";
-    SpdrDateOperator["before"] = "before";
-    SpdrDateOperator["strictlyAfter"] = "strictly_after";
-    SpdrDateOperator["strictlyBefore"] = "strictly_before";
-})(SpdrDateOperator || (SpdrDateOperator = {}));
+export var DateOperator;
+(function (DateOperator) {
+    DateOperator["after"] = "after";
+    DateOperator["before"] = "before";
+    DateOperator["strictlyAfter"] = "strictly_after";
+    DateOperator["strictlyBefore"] = "strictly_before";
+})(DateOperator || (DateOperator = {}));
 /**
  * Pagination properties
  * @enum string
  */
-export var SpdrPageOperator;
-(function (SpdrPageOperator) {
-    SpdrPageOperator["pagination"] = "pagination";
-    SpdrPageOperator["page"] = "page";
-    SpdrPageOperator["itemsPerPage"] = "itemsPerPage";
-})(SpdrPageOperator || (SpdrPageOperator = {}));
+export var PageOperator;
+(function (PageOperator) {
+    PageOperator["pagination"] = "pagination";
+    PageOperator["page"] = "page";
+    PageOperator["itemsPerPage"] = "itemsPerPage";
+})(PageOperator || (PageOperator = {}));
 //# sourceMappingURL=spdrParam.js.map

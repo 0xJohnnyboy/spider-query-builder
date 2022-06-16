@@ -2,10 +2,11 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "es6",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "target": "es6",
     "sourceMap": true,
     "declaration": true,
+    "resolveJsonModule": true,
     "experimentalDecorators": true
   },
   "include": [

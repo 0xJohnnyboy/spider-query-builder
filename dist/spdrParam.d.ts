@@ -3,10 +3,12 @@
  */
 export interface SpdrParamInterface {
     query: string;
-    operator: SpdrOperator | SpdrRangeOperator | SpdrDateOperator;
+    property: string;
+    value: any;
+    operator: Operator | RangeOperator | DateOperator;
 }
 /**
- * SpdrParam Abstract Class
+ * Spdr Abstract Class
  * You should extend this for your custom purposes.
  * The SpdrQueryBuilder expects SpdrParamInterface[] as a parameter, though.
  * This means you can create your own abstract implementation.
@@ -17,18 +19,18 @@ export declare abstract class SpdrParam implements SpdrParamInterface {
     private readonly _value;
     private _query;
     /**
-     * SpdrParam base constructor
+     * Spdr SpdrParam base constructor
      * @param property string
-     * @param operator SpdrOperator | SpdrRangeOperator | SpdrDateOperator
+     * @param operator Operator | RangeOperator | DateOperator
      * @param value any
      * @protected
      */
-    protected constructor(property: string, operator: SpdrOperator | SpdrRangeOperator | SpdrDateOperator, value: any);
+    protected constructor(property: string, operator: Operator | RangeOperator | DateOperator, value: any);
     get property(): string;
     get value(): any;
     get query(): string;
     set query(value: string);
-    get operator(): SpdrOperator | SpdrRangeOperator | SpdrDateOperator;
+    get operator(): Operator | RangeOperator | DateOperator;
 }
 export declare class SpdrExists extends SpdrParam {
     /**
@@ -48,29 +50,29 @@ export declare class SpdrSearch extends SpdrParam {
 }
 export declare class SpdrDate extends SpdrParam {
     /**
-     * The date will be formatted in YYYY-MM-DD format, implement a new SpdrParam if you need another formatting.
+     * The date will be formatted in YYYY-MM-DD format, implement a new Spdr if you need another formatting.
      * @param property string
-     * @param operator SpdrDateOperator
+     * @param operator DateOperator
      * @param value Date
      */
-    constructor(property: string, operator: SpdrDateOperator, value: Date);
+    constructor(property: string, operator: DateOperator, value: Date);
 }
 export declare class SpdrRange extends SpdrParam {
     /**
      * The secondValue parameter is required for the 'between' operator
      * @param property string
-     * @param operator SpdrRangeOperator
+     * @param operator RangeOperator
      * @param value number
      * @param secondValue number // optional
      */
-    constructor(property: string, operator: SpdrRangeOperator, value: number, secondValue?: number);
+    constructor(property: string, operator: RangeOperator, value: number, secondValue?: number);
 }
 export declare class SpdrOrder extends SpdrParam {
     /**
      * @param property string
-     * @param value SpdrOrderOperator
+     * @param value OrderOperator
      */
-    constructor(property: string, value: SpdrOrderOperator);
+    constructor(property: string, value: OrderOperator);
 }
 export declare class SpdrPagination extends SpdrParam {
     /**
@@ -97,7 +99,7 @@ export declare class SpdrPageSize extends SpdrParam {
  * Base operators
  * @enum string
  */
-export declare enum SpdrOperator {
+export declare enum Operator {
     exists = "exists",
     equals = "=",
     sort = "order"
@@ -106,7 +108,7 @@ export declare enum SpdrOperator {
  * Sort values
  * @enum string
  */
-export declare enum SpdrOrderOperator {
+export declare enum OrderOperator {
     asc = "asc",
     desc = "desc"
 }
@@ -114,7 +116,7 @@ export declare enum SpdrOrderOperator {
  * Range and comparison operators
  * @enum string
  */
-export declare enum SpdrRangeOperator {
+export declare enum RangeOperator {
     lt = "lt",
     lte = "lte",
     gt = "gt",
@@ -125,7 +127,7 @@ export declare enum SpdrRangeOperator {
  * Date comparison operators
  * @enum string
  */
-export declare enum SpdrDateOperator {
+export declare enum DateOperator {
     after = "after",
     before = "before",
     strictlyAfter = "strictly_after",
@@ -135,7 +137,7 @@ export declare enum SpdrDateOperator {
  * Pagination properties
  * @enum string
  */
-export declare enum SpdrPageOperator {
+export declare enum PageOperator {
     pagination = "pagination",
     page = "page",
     itemsPerPage = "itemsPerPage"

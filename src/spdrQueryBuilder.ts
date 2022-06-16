@@ -1,22 +1,25 @@
 import {
+    DateOperator,
+    OrderOperator,
+    PageOperator,
+    RangeOperator,
     SpdrDate,
-    SpdrDateOperator,
     SpdrExists,
     SpdrOrder,
-    SpdrOrderOperator,
     SpdrPageIdx,
-    SpdrPageOperator,
     SpdrPageSize,
-    SpdrPagination, SpdrParam,
+    SpdrPagination,
+    SpdrParam,
     SpdrParamInterface,
     SpdrRange,
-    SpdrRangeOperator,
     SpdrSearch
-} from "./spdrParam";
+} from '../src';
+
 
 export class SpdrQueryBuilder {
 
     private static readonly _DEFAULT_OPERAND = '&';
+
     private _query: string;
     private _operand: string;
     private _history: string[] = [];
@@ -35,7 +38,7 @@ export class SpdrQueryBuilder {
 
         return this;
     }
-    
+
     public clearHistory(): SpdrQueryBuilder {
         this._history = [];
 
@@ -54,37 +57,37 @@ export class SpdrQueryBuilder {
         return this;
     }
 
-    public range(property: string, operator: SpdrRangeOperator, value: number, secondValue?: number): SpdrQueryBuilder {
+    public range(property: string, operator: RangeOperator, value: number, secondValue?: number): SpdrQueryBuilder {
         this._addParam(new SpdrRange(property, operator, value, secondValue));
 
         return this;
     }
 
-    public date(property: string, operator: SpdrDateOperator, value: Date): SpdrQueryBuilder {
+    public date(property: string, operator: DateOperator, value: Date): SpdrQueryBuilder {
         this._addParam(new SpdrDate(property, operator, value));
 
         return this;
     }
 
-    public order(property: string, direction: SpdrOrderOperator): SpdrQueryBuilder {
+    public order(property: string, direction: OrderOperator): SpdrQueryBuilder {
         this._addSortParam(new SpdrOrder(property, direction));
 
         return this;
     }
 
-    public enablePagination(value: boolean = true, property: string = SpdrPageOperator.pagination): SpdrQueryBuilder {
+    public enablePagination(value: boolean = true, property: string = PageOperator.pagination): SpdrQueryBuilder {
         this._addPaginationParam(new SpdrPagination(value, property));
 
         return this;
     }
 
-    public pageIndex(value: number, property: string = SpdrPageOperator.page): SpdrQueryBuilder {
+    public pageIndex(value: number, property: string = PageOperator.page): SpdrQueryBuilder {
         this._addPaginationParam(new SpdrPageIdx(value, property));
 
         return this;
     }
 
-    public pageSize(value: number, property: string = SpdrPageOperator.itemsPerPage): SpdrQueryBuilder {
+    public pageSize(value: number, property: string = PageOperator.itemsPerPage): SpdrQueryBuilder {
         this._addPaginationParam(new SpdrPageSize(value, property));
 
         return this;
@@ -166,7 +169,9 @@ export class SpdrQueryBuilder {
     }
 
     private _append(param: SpdrParamInterface, operand: string = this._operand) {
-        this._query += `${operand}${param.query}`;
+        const query = param.query ?? param['_query']
+        // todo : find a way to cast params as SpdrSpdrParamInterface and keep getters
+        this._query += `${operand}${query}`;
     }
 
     private _buildQuery() {
@@ -188,6 +193,34 @@ export class SpdrQueryBuilder {
 
     get previousQuery(): string {
         return this._history[this._history.length - 1];
+    }
+
+
+    get params(): SpdrParamInterface[] {
+        return this._params;
+    }
+
+    set params(value: SpdrParamInterface[]) {
+        this._params = value;
+        this._buildQuery();
+    }
+
+    get sortParams(): SpdrParamInterface[] {
+        return this._sortParams;
+    }
+
+    set sortParams(value: SpdrParamInterface[]) {
+        this._sortParams = value;
+        this._buildQuery();
+    }
+
+    get paginationParams(): SpdrParamInterface[] {
+        return this._paginationParams;
+    }
+
+    set paginationParams(value: SpdrParamInterface[]) {
+        this._paginationParams = value;
+        this._buildQuery();
     }
 }
 
