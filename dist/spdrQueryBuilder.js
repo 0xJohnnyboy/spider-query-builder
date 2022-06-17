@@ -116,7 +116,7 @@ export class SpdrQueryBuilder {
     }
     _append(param, operand = this._operand) {
         var _a;
-        const query = (_a = param.query) !== null && _a !== void 0 ? _a : param['_query'];
+        const query = (_a = param.query) !== null && _a !== void 0 ? _a : (param['_query'] || param['query']);
         // todo : find a way to cast params as SpdrSpdrParamInterface and keep getters
         this._query += `${operand}${query}`;
     }

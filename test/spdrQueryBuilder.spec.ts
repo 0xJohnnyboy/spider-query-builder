@@ -3,7 +3,8 @@ import {
     SpdrQueryBuilder,
     DateOperator,
     RangeOperator,
-    OrderOperator
+    OrderOperator,
+    Operator
 } from "../src";
 import {SpdrParamType} from "../src/spdrQueryBuilder";
 
@@ -307,5 +308,29 @@ describe('Testing SpdrQueryBuilder', () => {
         qb.query.should.equal(expected);
 
         fakeLocalStorage.delete('paginationParams');
+    });
+
+    it('should append a SpdrParamInterface to a query builder',  () => {
+        const qb = new SpdrQueryBuilder();
+        const param = {
+            query: 'name[]=John Doe&name[]=Jane Doe',
+            property: 'name',
+            operator: Operator.equals,
+            value: [ 'John Doe', 'Jane Doe' ]
+        };
+
+        qb['_append'](param);
+        qb.query.should.equal('name[]=John Doe&name[]=Jane Doe');
+    });
+
+    it('should append a param to a query builder',  () => {
+        const qb = new SpdrQueryBuilder()
+            .search('name', ['John Doe', 'Jane Doe']);
+
+        const param = JSON.parse(JSON.stringify(qb.params))[0];
+
+        qb.clear();
+        qb['_append'](param);
+        qb.query.should.equal('name[]=John Doe&name[]=Jane Doe');
     });
 })
