@@ -9,7 +9,6 @@ import {
     SpdrPageIdx,
     SpdrPageSize,
     SpdrPagination,
-    SpdrParam,
     SpdrParamInterface,
     SpdrRange,
     SpdrSearch
@@ -133,18 +132,18 @@ export class SpdrQueryBuilder {
     public remove(property: string, type?: SpdrParamType): SpdrQueryBuilder {
         switch (type) {
             case SpdrParamType.param:
-                this._params = this._params.filter((param: SpdrParam) => param.property !== property);
+                this._params = this._params.filter((param: SpdrParamInterface) => param.property !== property);
                 break;
             case SpdrParamType.sort:
-                this._sortParams = this._sortParams.filter((param: SpdrParam) => param.property !== property);
+                this._sortParams = this._sortParams.filter((param: SpdrParamInterface) => param.property !== property);
                 break;
             case SpdrParamType.pagination:
-                this._paginationParams = this._paginationParams.filter((param: SpdrParam) => param.property !== property);
+                this._paginationParams = this._paginationParams.filter((param: SpdrParamInterface) => param.property !== property);
                 break;
             default:
-                this._params = this._params.filter((param: SpdrParam) => param.property !== property);
-                this._sortParams = this._sortParams.filter((param: SpdrParam) => param.property !== property);
-                this._paginationParams = this._paginationParams.filter((param: SpdrParam) => param.property !== property);
+                this._params = this._params.filter((param: SpdrParamInterface) => param.property !== property);
+                this._sortParams = this._sortParams.filter((param: SpdrParamInterface) => param.property !== property);
+                this._paginationParams = this._paginationParams.filter((param: SpdrParamInterface) => param.property !== property);
                 break;
         }
 
