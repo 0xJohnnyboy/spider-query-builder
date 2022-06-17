@@ -16,6 +16,7 @@ export class SpdrParam {
      * @protected
      */
     constructor(property, operator, value) {
+        this._query = '';
         this._property = property;
         this._operator = operator;
         this._value = value;

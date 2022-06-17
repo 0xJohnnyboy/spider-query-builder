@@ -19,10 +19,10 @@ export interface SpdrParamInterface {
  * This means you can create your own abstract implementation.
  */
 export abstract class SpdrParam implements SpdrParamInterface {
-    private readonly _property: string;
+    private readonly _property;
     private readonly _operator: Operator | RangeOperator | DateOperator;
     private readonly _value: any;
-    private _query: string;
+    private _query: string = '';
 
     /**
      * Spdr SpdrParam base constructor
