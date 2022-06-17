@@ -1,12 +1,11 @@
 import * as chai from 'chai';
 import {
-    SpdrQueryBuilder,
     DateOperator,
     RangeOperator,
     OrderOperator,
     Operator
 } from "../src";
-import {SpdrParamType} from "../src/spdrQueryBuilder";
+import {SpdrQueryBuilder, SpdrParamType} from "../src/spdrQueryBuilder";
 
 chai.should();
 

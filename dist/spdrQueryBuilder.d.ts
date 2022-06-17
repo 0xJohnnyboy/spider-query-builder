@@ -1,4 +1,4 @@
-import { DateOperator, OrderOperator, RangeOperator, SpdrParamInterface } from '../src';
+import { DateOperator, OrderOperator, RangeOperator, SpdrParamInterface } from './spdrParam';
 export declare class SpdrQueryBuilder {
     private static readonly _DEFAULT_OPERAND;
     private _query;

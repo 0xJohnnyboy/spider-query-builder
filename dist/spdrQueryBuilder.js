@@ -1,4 +1,4 @@
-import { PageOperator, SpdrDate, SpdrExists, SpdrOrder, SpdrPageIdx, SpdrPageSize, SpdrPagination, SpdrRange, SpdrSearch } from '../src';
+import { PageOperator, SpdrDate, SpdrExists, SpdrOrder, SpdrPageIdx, SpdrPageSize, SpdrPagination, SpdrRange, SpdrSearch } from './spdrParam';
 export class SpdrQueryBuilder {
     constructor(operand) {
         this._history = [];

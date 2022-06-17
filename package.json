@@ -1,7 +1,7 @@
 {
   "name": "@sonicfury/spider-query-builder",
   "description": "Offers typing and query params building for API Platform",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "author": {
     "name": "Théo LAMBERT",
     "email": "theo.lambert@viacesi.fr"

@@ -12,7 +12,7 @@ import {
     SpdrParamInterface,
     SpdrRange,
     SpdrSearch
-} from '../src';
+} from './spdrParam';
 
 
 export class SpdrQueryBuilder {
