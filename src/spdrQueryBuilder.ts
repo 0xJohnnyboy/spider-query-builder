@@ -24,8 +24,8 @@ export class SpdrQueryBuilder {
     private _history: string[] = [];
 
     private _params: SpdrParamInterface[] = [];
-    private _sortParams: SpdrParamInterface[] = [];
-    private _paginationParams: SpdrParamInterface[] = [];
+    private _sortParams: Map<string, SpdrParamInterface> = new Map<string, SpdrParamInterface>();
+    private _paginationParams: Map<string, SpdrParamInterface> = new Map<string, SpdrParamInterface>();
 
     constructor(operand?: string) {
         this._query = '';
@@ -104,15 +104,15 @@ export class SpdrQueryBuilder {
                 this._params = [];
                 break;
             case SpdrParamType.sort:
-                this._sortParams = [];
+                this._sortParams.clear();
                 break;
             case SpdrParamType.pagination:
-                this._paginationParams = [];
+                this._paginationParams.clear();
                 break;
             default:
                 this._params = [];
-                this._sortParams = [];
-                this._paginationParams = [];
+                this._sortParams.clear();
+                this._paginationParams.clear();
                 break;
         }
 
@@ -135,15 +135,15 @@ export class SpdrQueryBuilder {
                 this._params = this._params.filter((param: SpdrParamInterface) => param.property !== property);
                 break;
             case SpdrParamType.sort:
-                this._sortParams = this._sortParams.filter((param: SpdrParamInterface) => param.property !== property);
+                this._sortParams.delete(property);
                 break;
             case SpdrParamType.pagination:
-                this._paginationParams = this._paginationParams.filter((param: SpdrParamInterface) => param.property !== property);
+                this._paginationParams.delete(property);
                 break;
             default:
                 this._params = this._params.filter((param: SpdrParamInterface) => param.property !== property);
-                this._sortParams = this._sortParams.filter((param: SpdrParamInterface) => param.property !== property);
-                this._paginationParams = this._paginationParams.filter((param: SpdrParamInterface) => param.property !== property);
+                this._sortParams.delete(property);
+                this._paginationParams.delete(property);
                 break;
         }
 
@@ -158,12 +158,12 @@ export class SpdrQueryBuilder {
     }
 
     private _addSortParam(param: SpdrParamInterface) {
-        this._sortParams.push(param);
+        this._sortParams.set(param.property, param);
         this._buildQuery();
     }
 
     private _addPaginationParam(param: SpdrParamInterface) {
-        this._paginationParams.push(param);
+        this._paginationParams.set(param.property, param);
         this._buildQuery();
     }
 
@@ -175,7 +175,14 @@ export class SpdrQueryBuilder {
 
     private _buildQuery() {
         this._query = '';
-        [...this._params, ...this._sortParams, ...this._paginationParams].forEach(param => this._append(param));
+        this._params.forEach(param => this._append(param));
+
+        this._sortParams.forEach((value) => {
+            this._append(value)
+        })
+        this._paginationParams.forEach((value) => {
+            this._append(value)
+        })
     }
 
     /**
@@ -205,20 +212,20 @@ export class SpdrQueryBuilder {
     }
 
     get sortParams(): SpdrParamInterface[] {
-        return this._sortParams;
+        return Array.from(this._sortParams.values());
     }
 
-    set sortParams(value: SpdrParamInterface[]) {
-        this._sortParams = value;
+    set sortParams(values: SpdrParamInterface[]) {
+        values.forEach(v => this._sortParams.set(v.property ?? (v['property']||v['_property']), v));
         this._buildQuery();
     }
 
     get paginationParams(): SpdrParamInterface[] {
-        return this._paginationParams;
+        return Array.from(this._paginationParams.values());
     }
 
-    set paginationParams(value: SpdrParamInterface[]) {
-        this._paginationParams = value;
+    set paginationParams(values: SpdrParamInterface[]) {
+        values.forEach(v => this._paginationParams.set(v.property ?? (v['property'] || v['_property']), v));
         this._buildQuery();
     }
 }

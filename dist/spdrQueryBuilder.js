@@ -3,8 +3,8 @@ export class SpdrQueryBuilder {
     constructor(operand) {
         this._history = [];
         this._params = [];
-        this._sortParams = [];
-        this._paginationParams = [];
+        this._sortParams = new Map();
+        this._paginationParams = new Map();
         this._query = '';
         this._operand = operand !== null && operand !== void 0 ? operand : SpdrQueryBuilder._DEFAULT_OPERAND;
     }
@@ -60,15 +60,15 @@ export class SpdrQueryBuilder {
                 this._params = [];
                 break;
             case SpdrParamType.sort:
-                this._sortParams = [];
+                this._sortParams.clear();
                 break;
             case SpdrParamType.pagination:
-                this._paginationParams = [];
+                this._paginationParams.clear();
                 break;
             default:
                 this._params = [];
-                this._sortParams = [];
-                this._paginationParams = [];
+                this._sortParams.clear();
+                this._paginationParams.clear();
                 break;
         }
         this._history.push(this.query);
@@ -88,15 +88,15 @@ export class SpdrQueryBuilder {
                 this._params = this._params.filter((param) => param.property !== property);
                 break;
             case SpdrParamType.sort:
-                this._sortParams = this._sortParams.filter((param) => param.property !== property);
+                this._sortParams.delete(property);
                 break;
             case SpdrParamType.pagination:
-                this._paginationParams = this._paginationParams.filter((param) => param.property !== property);
+                this._paginationParams.delete(property);
                 break;
             default:
                 this._params = this._params.filter((param) => param.property !== property);
-                this._sortParams = this._sortParams.filter((param) => param.property !== property);
-                this._paginationParams = this._paginationParams.filter((param) => param.property !== property);
+                this._sortParams.delete(property);
+                this._paginationParams.delete(property);
                 break;
         }
         this._buildQuery();
@@ -107,11 +107,11 @@ export class SpdrQueryBuilder {
         this._buildQuery();
     }
     _addSortParam(param) {
-        this._sortParams.push(param);
+        this._sortParams.set(param.property, param);
         this._buildQuery();
     }
     _addPaginationParam(param) {
-        this._paginationParams.push(param);
+        this._paginationParams.set(param.property, param);
         this._buildQuery();
     }
     _append(param, operand = this._operand) {
@@ -122,7 +122,13 @@ export class SpdrQueryBuilder {
     }
     _buildQuery() {
         this._query = '';
-        [...this._params, ...this._sortParams, ...this._paginationParams].forEach(param => this._append(param));
+        this._params.forEach(param => this._append(param));
+        this._sortParams.forEach((value) => {
+            this._append(value);
+        });
+        this._paginationParams.forEach((value) => {
+            this._append(value);
+        });
     }
     /**
      * Returns the query.
@@ -145,17 +151,17 @@ export class SpdrQueryBuilder {
         this._buildQuery();
     }
     get sortParams() {
-        return this._sortParams;
+        return Array.from(this._sortParams.values());
     }
-    set sortParams(value) {
-        this._sortParams = value;
+    set sortParams(values) {
+        values.forEach(v => { var _a; return this._sortParams.set((_a = v.property) !== null && _a !== void 0 ? _a : (v['property'] || v['_property']), v); });
         this._buildQuery();
     }
     get paginationParams() {
-        return this._paginationParams;
+        return Array.from(this._paginationParams.values());
     }
-    set paginationParams(value) {
-        this._paginationParams = value;
+    set paginationParams(values) {
+        values.forEach(v => { var _a; return this._paginationParams.set((_a = v.property) !== null && _a !== void 0 ? _a : (v['property'] || v['_property']), v); });
         this._buildQuery();
     }
 }

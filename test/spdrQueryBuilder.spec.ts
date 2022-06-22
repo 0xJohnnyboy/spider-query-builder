@@ -1,11 +1,6 @@
 import * as chai from 'chai';
-import {
-    DateOperator,
-    RangeOperator,
-    OrderOperator,
-    Operator
-} from "../src";
-import {SpdrQueryBuilder, SpdrParamType} from "../src/spdrQueryBuilder";
+import {DateOperator, OrderOperator, RangeOperator, SpdrQueryBuilder} from "../src";
+import {SpdrParamType} from "../src/spdrQueryBuilder";
 
 chai.should();
 
@@ -309,27 +304,27 @@ describe('Testing SpdrQueryBuilder', () => {
         fakeLocalStorage.delete('paginationParams');
     });
 
-    it('should append a SpdrParamInterface to a query builder',  () => {
-        const qb = new SpdrQueryBuilder();
-        const param = {
-            query: 'name[]=John Doe&name[]=Jane Doe',
-            property: 'name',
-            operator: Operator.equals,
-            value: [ 'John Doe', 'Jane Doe' ]
-        };
+    it('should overwrite sortparams on same property', () => {
+        const expected = `order[name]=desc`
+        const qb = new SpdrQueryBuilder()
+            .order('name', OrderOperator.asc)
+            .order('name', OrderOperator.desc)
 
-        qb['_append'](param);
-        qb.query.should.equal('name[]=John Doe&name[]=Jane Doe');
+        qb.sortParams.length.should.equal(1)
+        qb.query.should.equal(expected)
     });
 
-    it('should append a param to a query builder',  () => {
+    it('should overwrite pagination params', () => {
+        const expected = `pagination=true&itemsPerPage=50&page=18`
         const qb = new SpdrQueryBuilder()
-            .search('name', ['John Doe', 'Jane Doe']);
+            .enablePagination()
+            .pageSize(10)
+            .pageIndex(2)
+            .enablePagination()
+            .pageSize(50)
+            .pageIndex(18)
 
-        const param = JSON.parse(JSON.stringify(qb.params))[0];
-
-        qb.clear();
-        qb['_append'](param);
-        qb.query.should.equal('name[]=John Doe&name[]=Jane Doe');
+        qb.paginationParams.length.should.equal(3)
+        qb.query.should.equal(expected)
     });
 })
