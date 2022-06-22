@@ -48,9 +48,9 @@ export declare class SpdrQueryBuilder {
     get params(): SpdrParamInterface[];
     set params(value: SpdrParamInterface[]);
     get sortParams(): SpdrParamInterface[];
-    set sortParams(value: SpdrParamInterface[]);
+    set sortParams(values: SpdrParamInterface[]);
     get paginationParams(): SpdrParamInterface[];
-    set paginationParams(value: SpdrParamInterface[]);
+    set paginationParams(values: SpdrParamInterface[]);
 }
 export declare enum SpdrParamType {
     param = 0,
