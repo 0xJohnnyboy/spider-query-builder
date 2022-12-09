@@ -15,7 +15,7 @@ You can easily build your own types by extending `SpdrParam`, or by implementing
 
 All the following examples are using a new instance of the **SpdrQueryBuilder**.
 
-Params are splitted internally into **3 sections** so that you can reset them separately: **Params, Sort and Pagination**.
+Params are split internally into **3 sections** so that you can reset them separately: **Params, Sort and Pagination**.
 **Sort** and **Pagination** are *destructive*. It means that if you pass a sort on a same property, or if you set the page size 2 times in a row, it will **override the last param**.
 This is way simpler to use since you usually don't want to sort twice on the same property, and you don't want to have multiple page size params in your query. You don't have to take care of the replacement yourself.
 Note that only concerns sort and pagination. For now, **normal params are "manual"**.
