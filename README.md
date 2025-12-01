@@ -9,11 +9,10 @@
     |_|                         |_|                |___/
 ```
 
-
-[![GitHub Release](https://github-basic-badges.herokuapp.com/release/Sonicfury/spider-query-builder.svg)]()
-[![GitHub License](https://github-basic-badges.herokuapp.com/license/Sonicfury/spider-query-builder.svg)]()
 ![test](https://github.com/sonicfury/spider-query-builder/actions/workflows/test.yml/badge.svg)
 ![publish](https://github.com/sonicfury/spider-query-builder/actions/workflows/publish.yml/badge.svg)
+
+> ⚠️ Due to lack of activity, I'm sunsetting the project. There is very little code, feel free to use it to build your own tool if you need something alike.
 
 # Installation
 ```bash
@@ -34,7 +33,7 @@ This project is under AGPL 3 License
 
 [See docs](docs/docs.md)
 ## Example
-Say you have a DomainService (`domain.service.ts` file) with the something like:
+Say you have a DomainService (`domain.service.ts` file) with something like:
 
 ```typescript
 class DomainService extends AbstractService{
